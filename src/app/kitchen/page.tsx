@@ -1,14 +1,16 @@
-import "./kitchen.scss";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-const Kitchen = () => {
-	return (
-		<div className="kitchen">
-			{/* TODO: Re-enable Lottie when xtreme-ui is compatible with React 19 / build setup.
-			    Currently causes prerender error: TypeError: (0 , g.useState) is not a function
-			<Lottie src={getAnimSrc("UnderConstruction")} size={450} /> */}
-			<p>This page is under development</p>
-		</div>
-	);
+import { authOptions } from "#utils/helper/authHelper";
+
+import KitchenDisplay from "./KitchenDisplay";
+
+const Kitchen = async () => {
+	const session = await getServerSession(authOptions);
+	// Kitchen-role accounts are future work; restaurant owners currently use admin.
+	if (!session || session.role !== "admin") redirect("/");
+
+	return <KitchenDisplay />;
 };
 
 export default Kitchen;

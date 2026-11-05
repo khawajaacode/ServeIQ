@@ -31,7 +31,7 @@ OrderSchema.pre("save", function () {
 	this.taxTotal = 0;
 	this?.products?.forEach(({ quantity, price, tax }) => {
 		this.orderTotal += price * quantity;
-		this.taxTotal += tax;
+		this.taxTotal += tax * quantity;
 	});
 });
 

@@ -1,6 +1,6 @@
 .rupee {
 	&::before {
-		content: '₹';
+		content: 'Rs';
 		user-select: none;
 		margin-right: 5px;
 	}

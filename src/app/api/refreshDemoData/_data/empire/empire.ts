@@ -15,7 +15,7 @@ const profile = {
 	name: "Empire Restaurant",
 	restaurantID: "empire",
 	description: "Casual Dining - Kerala, Biryani, North Indian, South Indian, Chinese, Arabian, Seafood",
-	address: "koramangala, Benagaluru",
+	address: "Islamabad, Pakistan",
 	themeColor: { h: 347, s: 76, l: 19 },
 	avatar: "https://lh3.googleusercontent.com/6pc0PrmxaBRy3IQNzdtCWW86iCecUOM7GXJnEKIIi56mtJ5nl1OCo_ZwjyaxtTsDstg3l1GUkH_95158smqRIrwtDSPvP_iX9Upd7E9c",
 	cover: "https://b.zmtcdn.com/data/pictures/chains/1/50471/bcf68da39dcfb0fe5bcfb742c337385e.jpg",

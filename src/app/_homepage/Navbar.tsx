@@ -6,7 +6,7 @@ export default function Navbar({ menuOpen, setMenuOpen }: TNavBarProps) {
 	return (
 		<div className="homeNavbar" id="homepage-navBar">
 			<div className="logo" onClick={() => scrollToSection()}>
-				YOUR_PROJECT_NAME
+				ServeIQ
 			</div>
 			<div className={`menu ${menuOpen ? "open" : ""}`}>
 				<div className="icon round" onClick={() => setMenuOpen(!menuOpen)}>

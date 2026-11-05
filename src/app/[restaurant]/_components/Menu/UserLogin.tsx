@@ -7,7 +7,7 @@ import { Button, Textfield } from "xtreme-ui";
 
 import "./userLogin.scss";
 
-const mobileNumberPattern = /^(\+91[-\s]?)?[6-9]\d{9}$/;
+const mobileNumberPattern = /^(\+92|0)?3\d{9}$/;
 const UserLogin = ({ setOpen }: UserLoginProps) => {
 	const pathname = usePathname();
 	const params = useSearchParams();
@@ -15,14 +15,14 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 	const [buttonLabel, setButtonLabel] = useState("Next");
 	const [busy, setBusy] = useState(false);
 
-	const [dialCode] = useState("91");
+	const [dialCode] = useState("92");
 	const [phone, setPhone] = useState("");
 
 	const [fname, setFName] = useState("");
 	const [lname, setLName] = useState("");
 	const [heading, setHeading] = useState(["Let's", " start ordering"]);
 
-	const phoneNumber = `+${dialCode}${phone}`;
+	const phoneNumber = phone.startsWith("+") || phone.startsWith("0") ? phone : `+${dialCode}${phone}`;
 	const onNext = async () => {
 		if (page === "phone") {
 			if (!mobileNumberPattern.test(phoneNumber)) {
@@ -79,15 +79,18 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 				</span>
 			</div>
 			<div className="content">
-				<Textfield
-					autoComplete="tel-local"
-					className="phone"
-					id="user-login-phone"
-					onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-					onEnterKey={onNext}
-					type="phone"
-					value={phone}
-				/>
+				<div className="phoneInput">
+					<span className="dialCode">+92</span>
+					<Textfield
+						autoComplete="tel-local"
+						className="phone"
+						id="user-login-phone"
+						onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+						onEnterKey={onNext}
+						type="text"
+						value={phone}
+					/>
+				</div>
 				<div className="otpContainer">
 					<Textfield
 						autoComplete="given-name"

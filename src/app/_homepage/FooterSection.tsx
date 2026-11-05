@@ -3,7 +3,7 @@ import "./footerSection.scss";
 
 const FooterSection = () => (
 	<section className="footerSection" id="homepage-footer">
-		<p>© {new Date().getFullYear()} YOUR_NAME. All rights reserved.</p>
+		<p>© {new Date().getFullYear()} ServeIQ. All rights reserved.</p>
 		<Lightings />
 	</section>
 );

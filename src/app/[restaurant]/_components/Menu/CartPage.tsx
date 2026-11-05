@@ -131,7 +131,7 @@ const CartPage = (props: TCartPageProps) => {
 								<>
 									<p>Sub Total</p>
 									<span className="totalValue rupee">{order?.orderTotal} </span>
-									{order?.orderTotal && <span className="plusTaxes"> + ₹{order?.taxTotal} Tax</span>}
+									{order?.orderTotal && <span className="plusTaxes"> + Rs{order?.taxTotal} Tax</span>}
 								</>
 							)}
 						</div>

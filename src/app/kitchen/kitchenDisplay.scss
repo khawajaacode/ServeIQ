@@ -1,0 +1,89 @@
+.kitchenDisplay {
+	min-height: 100vh;
+	padding: 32px;
+	background: var(--colorBackground);
+	color: var(--colorContent);
+
+	header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 24px;
+	}
+
+	h1,
+	h2,
+	p {
+		margin: 0;
+	}
+
+	h1 {
+		font-size: 32px;
+	}
+
+	header p,
+	.ticketHeader p {
+		color: var(--colorContentSecondary);
+	}
+
+	.tickets {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 18px;
+	}
+
+	.ticket {
+		padding: 20px;
+		border: 1px solid var(--colorContentTertiary);
+		border-radius: 16px;
+		background: var(--colorBackgroundSecondary);
+	}
+
+	.ticketHeader {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 18px;
+	}
+
+	.ticketHeader strong {
+		color: hsl(var(--colorBrandPrimary));
+		white-space: nowrap;
+	}
+
+	ul {
+		display: grid;
+		gap: 10px;
+		margin: 0 0 20px;
+		padding: 0;
+		list-style: none;
+	}
+
+	button {
+		width: 100%;
+		padding: 11px 16px;
+		border: 0;
+		border-radius: 10px;
+		background: hsl(var(--colorBrandPrimary));
+		color: white;
+		cursor: pointer;
+		font: inherit;
+	}
+
+	button:disabled {
+		cursor: wait;
+		opacity: 0.6;
+	}
+
+	.empty,
+	.error {
+		padding: 24px;
+		border-radius: 12px;
+		background: var(--colorBackgroundSecondary);
+	}
+
+	.error {
+		margin-bottom: 18px;
+		color: #c0392b;
+	}
+}

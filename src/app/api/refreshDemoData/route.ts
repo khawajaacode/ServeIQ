@@ -1,3 +1,6 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+
 import connectDB from "#utils/database/connect";
 import { Accounts } from "#utils/database/models/account";
 import { Kitchens } from "#utils/database/models/kitchen";
@@ -5,6 +8,7 @@ import { Menus } from "#utils/database/models/menu";
 import { Profiles } from "#utils/database/models/profile";
 import { Tables } from "#utils/database/models/table";
 import { CatchNextResponse } from "#utils/helper/common";
+import { authOptions } from "#utils/helper/authHelper";
 
 import empire from "./_data/empire/empire";
 import starbucks from "./_data/starbucks/starbucks";
@@ -54,6 +58,11 @@ const createData = async (props: TDocumentData) => {
 };
 
 export async function GET() {
+	const session = await getServerSession(authOptions);
+	if (!session || session.role !== "admin") {
+		return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+	}
+
 	await connectDB();
 	try {
 		const start = performance.now();

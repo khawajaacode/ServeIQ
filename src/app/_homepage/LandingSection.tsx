@@ -52,7 +52,7 @@ const LandingSection = () => {
 				<h1 className="head">Revolutionizing</h1>
 				<p className="subHead">Dining Experience</p>
 				<p className="desc">Gone are the days of complex ordering systems and outdated</p>
-				<p className="desc">paper menus. It&apos;s time for the new normal, YOUR_PROJECT_NAME</p>
+				<p className="desc">paper menus. It&apos;s time for the new normal, ServeIQ</p>
 				<div className="greetingAction">
 					<Button label="Learn more" onClick={() => scrollToSection("homepage-aboutus")} type="secondary" />
 					<Button label="Order now" onClick={() => router.push("/scan")} />

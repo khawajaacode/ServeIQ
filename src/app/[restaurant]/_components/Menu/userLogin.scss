@@ -38,11 +38,29 @@
 		align-items: center;
 		transition: all var(--userLoginDuration) ease-out;
 
-		> .phone, .name {
+		> .phoneInput, .name {
 			position: absolute;
 			width: 100%;
 			opacity: 1;
 			transition: all var(--userLoginDuration) ease-out;
+		}
+
+		.phoneInput {
+			display: flex;
+			align-items: center;
+
+			.dialCode {
+				position: absolute;
+				z-index: 1;
+				margin-left: 14px;
+				color: var(--colorContentSecondary);
+				font-size: 14px;
+				pointer-events: none;
+			}
+
+			.phone {
+				width: 100%;
+			}
 		}
 
 		.otpContainer {
@@ -83,7 +101,7 @@
 		.content {
 			height: 100px;
 
-			> .phone {
+			> .phoneInput {
 				opacity: 0;
 				transform: translateX(-100%);
 			}
