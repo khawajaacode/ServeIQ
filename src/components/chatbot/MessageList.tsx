@@ -38,7 +38,12 @@ export const MessageList = memo(({ messages, isLoading, bottomRef, onResizeStart
 							</div>
 
 							<div className="assistantBody">
-								{message.content && <div className="assistantText" dangerouslySetInnerHTML={{ __html: message.content }} />}
+								{message.content &&
+									(message.isError ? (
+										<div className="assistantText">{message.content}</div>
+									) : (
+										<div className="assistantText" dangerouslySetInnerHTML={{ __html: message.content }} />
+									))}
 								{message.toolResults && message.toolResults.length > 0 && (
 									<div className="menuSuggestions">
 										{message.toolResults.map((items, idx) => (

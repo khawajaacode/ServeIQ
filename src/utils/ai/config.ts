@@ -1,6 +1,6 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 
-const configs = [
+export const configs = [
 	{
 		platform: "groq",
 		url: "https://api.groq.com/openai/v1",
@@ -14,7 +14,7 @@ const configs = [
 	{
 		platform: "google",
 		url: "https://generativelanguage.googleapis.com/v1beta/openai",
-		model: "gemini-2.5-pro",
+		model: "gemini-3-flash-preview",
 	},
 	{
 		platform: "siliconflow",
@@ -24,6 +24,9 @@ const configs = [
 ] as const;
 
 type AIProvider = ReturnType<ReturnType<typeof createOpenAICompatible>>;
+export type AIPlatform = (typeof configs)[number]["platform"];
+
+export const configuredProviders = configs.filter(({ platform }) => Boolean(process.env[`AI_${platform.toUpperCase()}_KEY`])).map(({ platform }) => platform) as AIPlatform[];
 
 export const models = Object.fromEntries(
 	configs.map(({ platform, url, model }) => {
@@ -34,6 +37,6 @@ export const models = Object.fromEntries(
 		});
 		return [platform, provider(model)];
 	})
-) as Record<(typeof configs)[number]["platform"], AIProvider>;
+) as Record<AIPlatform, AIProvider>;
 
-export const getModel = (provider: keyof typeof models) => models[provider];
+export const getModel = (provider: AIPlatform) => models[provider];

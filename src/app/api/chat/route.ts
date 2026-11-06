@@ -6,17 +6,28 @@ import type { TMenu } from "#utils/database/models/menu";
 import { authOptions } from "#utils/helper/authHelper";
 
 export async function POST(req: Request) {
+	let payload: unknown;
 	try {
-		const { messages, restaurantId } = await req.json();
-		if (!restaurantId) return Response.json({ text: "Restaurant ID is required", toolResults: [] }, { status: 400 });
+		payload = await req.json();
+	} catch {
+		return Response.json({ error: "Invalid JSON request.", toolResults: [] }, { status: 400 });
+	}
+
+	try {
+		if (!payload || typeof payload !== "object") return Response.json({ error: "Invalid request body.", toolResults: [] }, { status: 400 });
+		const { messages, restaurantId } = payload as { messages?: unknown; restaurantId?: unknown };
+		if (typeof restaurantId !== "string" || !restaurantId.trim()) return Response.json({ error: "Restaurant ID is required.", toolResults: [] }, { status: 400 });
+		if (!Array.isArray(messages) || !messages.every((message) => message && typeof message === "object" && ["user", "assistant"].includes((message as { role?: unknown }).role as string) && typeof (message as { content?: unknown }).content === "string")) {
+			return Response.json({ error: "Messages must be an array of valid chat messages.", toolResults: [] }, { status: 400 });
+		}
 
 		const session = await getServerSession(authOptions);
-		if (!session) return Response.json({ text: "Please login to chat with Jarvis", toolResults: [] }, { status: 401 });
+		if (!session) return Response.json({ error: "Please login to chat with Jarvis.", toolResults: [] }, { status: 401 });
 
 		const name = restaurantId.replace(/\b\w/g, (c: string) => c.toUpperCase()).replace(/[-_]/g, " ");
 		const account = await getRestaurantData(restaurantId).catch(() => null);
 
-		if (!account) return Response.json({ text: `Restaurant '${name}' not found`, toolResults: [] }, { status: 404 });
+		if (!account) return Response.json({ error: `Restaurant '${name}' not found.`, toolResults: [] }, { status: 404 });
 
 		const items: TMenu[] = account?.menus || [];
 		const menuMap = new Map(items.map((i) => [i.name.toLowerCase(), i]));
@@ -43,7 +54,9 @@ export async function POST(req: Request) {
 
 		return Response.json({ text, toolResults });
 	} catch (error) {
-		console.error("Error in AI Chat API:", error);
-		return Response.json({ text: "I apologize, but I'm having trouble connecting right now. Please try again.", toolResults: [] }, { status: 500 });
+		const details = error as { message?: string; statusCode?: number; isProviderError?: boolean };
+		const status = details.isProviderError ? 502 : 500;
+		console.error(`[AI] Chat request failed (${details.statusCode ?? status}): ${details.message || "Unknown error"}`);
+		return Response.json({ error: "The AI assistant is temporarily unavailable. Please try again.", toolResults: [] }, { status });
 	}
 }

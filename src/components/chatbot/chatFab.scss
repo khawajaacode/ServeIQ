@@ -48,11 +48,12 @@
 	}
 
 	@media (width <= 750px) {
-		bottom: 1rem;
+		bottom: calc(70px + env(safe-area-inset-bottom) + 1rem);
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		left: 100%;
 		transform: translateX(calc(-100% - 2.5rem));
 		body.chat-open & {
+			bottom: 1rem;
 			left: 50%;
 			transform: translateX(-50%);
 		}

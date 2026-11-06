@@ -131,20 +131,20 @@ const CartPage = (props: TCartPageProps) => {
 								<>
 									<p>Sub Total</p>
 									<span className="totalValue rupee">{order?.orderTotal} </span>
-									{order?.orderTotal && <span className="plusTaxes"> + Rs{order?.taxTotal} Tax</span>}
+									{order?.orderTotal && <span className="plusTaxes"> + PKR {order?.taxTotal} Tax</span>}
 								</>
 							)}
 						</div>
 					)}
 					<div className="cartAction">
 						<Button
-							icon={bottomBarActive ? "f078" : props.selectedProducts.length > 0 ? "e1bc" : "f09d"}
+							icon={bottomBarActive || props.selectedProducts.length === 0 ? (bottomBarActive ? "f078" : "f09d") : undefined}
 							iconType="solid"
 							label={
 								bottomBarActive
 									? "close"
 									: props.selectedProducts.length > 0
-										? `${selectionTotal} | ${order?.products?.length ? "Add to order" : "Place order"}`
+										? `PKR ${selectionTotal} | ${order?.products?.length ? "Add to order" : "Place order"}`
 										: "Proceed to Pay"
 							}
 							loading={placingOrder}

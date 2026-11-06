@@ -8,6 +8,11 @@ interface UseChatProps {
 	restaurantId: string;
 }
 
+const sanitizeAssistantHtml = (content: string) =>
+	content
+		.replace(/<\s*(\/?)\s*(ul|li|b|br)\b[^>]*>/gi, "<$1$2>")
+		.replace(/<[^>]*>/g, "");
+
 export const useChat = ({ restaurantId, isAuthenticated, initialMessages = [] }: UseChatProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
@@ -36,12 +41,13 @@ export const useChat = ({ restaurantId, isAuthenticated, initialMessages = [] }:
 			const data = await sendChatMessage([...historyToUse, userMessage], restaurantId);
 			const assistantMessage = createMessage(
 				"assistant",
-				(data.text || "").replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "").replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gim, ""),
+				sanitizeAssistantHtml(data.text || ""),
 				data.toolResults
 			);
 			setMessages((prev) => [...prev, assistantMessage]);
-		} catch {
-			const errorMessage = createMessage("assistant", "Sorry, I encountered an error. Please try again.");
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "The AI assistant is temporarily unavailable.";
+			const errorMessage = createMessage("assistant", message, undefined, true);
 			setMessages((prev) => [...prev, errorMessage]);
 		} finally {
 			setIsLoading(false);

@@ -13,16 +13,22 @@ export const sendChatMessage = async (messages: ChatMessage[], restaurantId: str
 		}),
 	});
 
-	if (!response.ok) throw new Error("Failed to get response");
-	const data = await response.json();
+	const data = await response.json().catch(() => null);
+	if (!response.ok) {
+		throw new Error(data?.error || data?.text || `AI request failed (${response.status})`);
+	}
+	if (!data || typeof data.text !== "string" || !Array.isArray(data.toolResults)) {
+		throw new Error("The AI assistant returned an invalid response.");
+	}
 
 	return data;
 };
 
-export const createMessage = (role: "user" | "assistant", content: string, toolResults?: MenuSuggestion[][]): ChatMessage => ({
+export const createMessage = (role: "user" | "assistant", content: string, toolResults?: MenuSuggestion[][], isError?: boolean): ChatMessage => ({
 	id: Date.now().toString() + Math.random(),
 	role,
 	content,
+	isError,
 	toolResults,
 	createdAt: Date.now(),
 });

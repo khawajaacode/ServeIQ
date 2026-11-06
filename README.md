@@ -1,126 +1,133 @@
-# YOUR_PROJECT_NAME
+# ServeIQ
 
-YOUR_PROJECT_NAME is a full-stack, AI-powered contactless dining platform designed to digitize restaurant operations. From scanning a QR code to placing an order, chatting with an intelligent AI assistant, and managing kitchen workflows, everything runs on a clean, modern web app built with **Next.js**, **MongoDB**, and **SCSS**.
-
----
-
-## Overview
-
-YOUR_PROJECT_NAME has two interfaces: one for **customers** and one for a **restaurant's admin**.
-
----
+ServeIQ is a full-stack restaurant ordering and management platform. Customers
+scan a table QR code, browse a digital menu, chat with an AI assistant, and
+place orders without downloading an app. Restaurant teams manage orders,
+kitchen operations, menus, tables, and settings from authenticated dashboards.
 
 ## Features
 
-- **QR Code-Based Access**: Every table gets a unique QR code for instant menu access.
-- **AI-Powered Assistant**: Chat with Jarvis, your intelligent restaurant assistant for personalized menu recommendations.
-- **Smart Ordering**: Customers can browse menus, add items, and place orders without downloading an app.
-- **Live Kitchen Dashboard**: Real-time order updates for chefs to prep efficiently.
-- **Admin Panel**: Manage tables, orders, inventory, payroll, and more.
-- **Real-Time UI**: Fast, responsive, and optimized for mobile, tablet, and desktop.
-- **Dark Theme Support**: Modern design with animation and smooth transitions.
+- QR-code menu access for restaurant tables
+- Contactless cart and order placement
+- AI assistant named Jarvis for menu questions and recommendations
+- Admin dashboard for orders, menus, tables, themes, and account settings
+- Kitchen dashboard for processing active orders
+- Responsive interface with light and dark themes
+- Multi-restaurant data model backed by MongoDB
 
----
+## Tech stack
 
-## AI Integration (Jarvis)
+- Next.js 16 and React 19
+- TypeScript and SCSS
+- MongoDB with Mongoose
+- NextAuth.js credentials authentication
+- Vercel AI SDK with OpenAI-compatible providers
+- pnpm
 
-Built on **Google Gemini (Gemma-27b)** via the **Vercel AI SDK**, Jarvis uses prompt engineering to act as a virtual waiter.
-
-- **Context-Aware**: Dynamically injects real-time menu data from MongoDB into system prompts for accurate allergen and ingredient answers.
-- **Structured Output**: Uses custom tokens to return direct item recommendations adjacent to natural language responses.
-- **No Vectors Required**: Efficient, real-time context injection without complex vector databases.
-
----
-
-## Tech Stack
-
-- **Frontend**: React + Next.js
-- **Styling**: SCSS (SASS)
-- **Backend**: API Routes in Next.js
-- **Database**: MongoDB
-- **Authentication**: NextAuth.js
-- **State Management**: React Context + Redux
-- **AI & Chatbot**: Vercel AI SDK + Google Gemini (Gemma-27b)
-
----
-
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- Node.js version specified in `.nvmrc`
+- Node.js `20.9.0` (see [`.nvmrc`](./.nvmrc))
 - pnpm
-- A MongoDB instance
+- MongoDB
+- API keys for any AI providers you want to enable
 
-### Installation
+### Install
 
 ```bash
 pnpm install
 ```
 
-### Environment Configuration
+### Configure environment variables
 
-Create a local environment file and set the variables required by your deployment, including your MongoDB connection string, authentication secret, and AI provider credentials.
+Create `.env.local` in the project root:
 
-TODO: document the exact environment variables used by this project.
+```dotenv
+MONGODB_URI=mongodb://localhost:27017/serveiq
+NEXTAUTH_SECRET=replace-with-a-long-random-secret
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
-### Development
+# Add the providers you want to use.
+AI_GROQ_KEY=
+AI_CEREBRAS_KEY=
+AI_GOOGLE_KEY=
+AI_SILICONFLOW_KEY=
+```
+
+`MONGODB_URI` and `NEXTAUTH_SECRET` are required. `NEXT_PUBLIC_SITE_URL`
+defaults to a placeholder URL if omitted, so set it for correct metadata,
+robots, and sitemap links.
+
+### Run in development
+
+For local development without Doppler:
 
 ```bash
 pnpm play
 ```
 
-The app runs at `http://localhost:3000`.
+The app is available at [http://localhost:3000](http://localhost:3000).
 
-To run with Doppler-managed secrets:
+If your environment uses Doppler, use the configured script instead:
 
 ```bash
 pnpm dev
 ```
 
-### Production Build
+### Build for production
 
 ```bash
 pnpm build
 pnpm start
 ```
 
----
+Run the configured checks with:
 
-## Usage
+```bash
+pnpm check
+```
 
-### Customer Flow
+## Using ServeIQ
 
-1. Open `http://localhost:3000/scan` or navigate directly to a restaurant menu such as `http://localhost:3000/<restaurant>?table=1`.
-2. Add items to the cart and place an order.
-3. Enter a name and phone number when prompted.
+### Customer experience
 
-### Admin Flow
+1. Open `/scan` to scan a table QR code, or open a restaurant menu directly:
+   `/<restaurant>?table=1`.
+2. Browse the menu, add items to the cart, and place an order.
+3. Enter the requested customer details when prompted.
 
-1. Open `http://localhost:3000` and scroll to the login section.
-2. Sign in with the admin credentials configured in your database.
-3. Open the Admin Dashboard at `http://localhost:3000/dashboard` or the Kitchen Dashboard at `http://localhost:3000/kitchen`.
+### Restaurant experience
 
----
+1. Open the home page and sign in with an administrator account.
+2. Use `/dashboard` to manage orders, menus, themes, and settings.
+3. Use `/kitchen` to view and process active kitchen orders.
 
 ## Screenshots
 
-### Menu Interface
-
 <p align="center">
-  <img src="public/screenshots/restaurant_menu.png" width="49%">
-  <img src="public/screenshots/restaurant_cart.png" width="49%">
+  <img src="public/screenshots/restaurant_banner.jpg" width="49%" alt="ServeIQ restaurant landing page">
+  <img src="public/screenshots/restaurant_menu.png" width="49%" alt="ServeIQ digital menu">
+</p>
+<p align="center">
+  <img src="public/screenshots/restaurant_cart.png" width="49%" alt="ServeIQ shopping cart">
+  <img src="public/screenshots/restaurant_qrcode_light.png" width="49%" alt="ServeIQ table QR code">
+</p>
+<p align="center">
+  <img src="public/screenshots/dashboard_requests.png" width="49%" alt="ServeIQ order requests dashboard">
+  <img src="public/screenshots/dashboard_active.png" width="49%" alt="ServeIQ active orders dashboard">
 </p>
 
-### Admin Dashboard
+## Project structure
 
-<p align="center">
-  <img src="public/screenshots/dashboard_requests.png" width="49%">
-  <img src="public/screenshots/dashboard_active.png" width="49%">
-</p>
+```text
+src/app/        Pages, dashboards, API routes, and customer flows
+src/components/ Shared React components
+src/utils/      Database, authentication, AI, SEO, and helper modules
+public/         Images and other static assets
+```
 
----
+## License
 
-## Tags
-
-`nextjs` `react` `javascript` `mongo` `sass` `typescript` `ai` `chatbot` `ai-assistant` `admin-panel` `dashboard` `qr-code` `realtime` `restaurant` `ecommerce` `responsive` `dark-theme` `ui` `animation` `scanner`
+No license has been specified yet. Add a `LICENSE` file before distributing
+ServeIQ as open-source software.
