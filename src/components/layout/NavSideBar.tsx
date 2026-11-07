@@ -21,7 +21,11 @@ const NavSideBar = (props: TNavSideBar) => {
 
 	const onNavClick = (tab: string) => {
 		if (tab === "signout") return router.push("/logout");
-		queryParams.set({ tab });
+		if (tab === "settings") {
+			queryParams.set({ tab, subTab: "menu" });
+		} else {
+			queryParams.set({ tab });
+		}
 	};
 
 	useEffect(() => {

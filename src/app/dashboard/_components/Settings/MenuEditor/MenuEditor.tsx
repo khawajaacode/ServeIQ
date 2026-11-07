@@ -7,12 +7,13 @@ import { useAdmin } from "#components/context/useContext";
 import type { TMenu } from "#utils/database/models/menu";
 
 import MenuEditorItem from "./MenuEditorItem";
+import MenuEditorModal from "./MenuEditorModal";
 import "./menuEditor.scss";
 
 const MenuEditor = () => {
 	const { profile, menus, profileLoading, profileMutate } = useAdmin();
 	const [modalState, setModalState] = useState("");
-	const [_editItem, setEditItem] = useState<TMenu>();
+	const [editItem, setEditItem] = useState<TMenu>();
 	const [hideSettingsLoading, setHideSettingsLoading] = useState<string[]>([]);
 	const [category, setCategory] = useState(0);
 
@@ -57,6 +58,12 @@ const MenuEditor = () => {
 
 	return (
 		<div className="menuEditor">
+			{modalState === "newState" && (
+				<MenuEditorModal categories={profile?.categories ?? []} item={undefined} onClose={() => setModalState("")} onSaved={profileMutate} />
+			)}
+			{modalState === "menuItemEditState" && (
+				<MenuEditorModal categories={profile?.categories ?? []} item={editItem} onClose={() => setModalState("")} onSaved={profileMutate} />
+			)}
 			<div className="menuCategoryEditor">
 				<div className="menuCategoryHeader">
 					<h1 className="menuCategoryHeading">Menu Categories</h1>

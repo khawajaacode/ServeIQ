@@ -1,0 +1,32 @@
+.menuEditorModal {
+	.heading {
+		font-variation-settings: "wdth" 85, "wght" 600;
+
+		span {
+			color: hsl(var(--colorBrandPrimary));
+		}
+	}
+
+	.fields {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin-top: 14px;
+
+		.fieldRow {
+			display: flex;
+			gap: 12px;
+
+			> * {
+				flex: 1;
+			}
+		}
+
+		.actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+			padding-top: 6px;
+		}
+	}
+}

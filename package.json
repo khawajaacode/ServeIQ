@@ -1,7 +1,7 @@
 {
 	"name": "YOUR_PROJECT_NAME",
 	"author": "YOUR_NAME",
-	"repository": "https://YOUR_REPOSITORY_URL",
+	"repository": "https://github.com/khawajaacode/ServeIQ.git",
 	"homepage": "https://YOUR_HOMEPAGE_URL",
 	"bugs": {
 		"url": "https://YOUR_ISSUES_URL"
@@ -14,7 +14,11 @@
 		"start": "next start",
 		"check": "ultracite check",
 		"fix": "ultracite fix",
-		"clean": "rm -rf node_modules pnpm-lock.yaml .next && pnpm install"
+		"clean": "rm -rf node_modules pnpm-lock.yaml .next && pnpm install",
+		"test": "vitest run",
+		"test:ui": "vitest run --reporter=ui",
+		"test:debug": "vitest run --debug",
+		"test:watch": "vitest watch"
 	},
 	"version": "0.1.0",
 	"private": true,
@@ -40,13 +44,17 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
+		"@playwright/test": "^1.65.0",
 		"@svgr/webpack": "^8.1.0",
 		"@types/bcrypt": "^6.0.0",
 		"@types/lodash": "^4.17.25",
 		"@types/node": "26.6.2",
 		"@types/react": "19.3.0",
 		"@types/react-dom": "19.3.0",
+		"supertest": "^7.3.2",
 		"typescript": "7.0.2",
-		"ultracite": "7.12.0"
+		"ultracite": "7.12.0",
+		"vite-tsconfig-paths": "^6.1.1",
+		"vitest": "^5.1.0"
 	}
 }
