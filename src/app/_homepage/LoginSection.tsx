@@ -50,9 +50,6 @@ const LoginSection = () => {
 				setTimeout(() => setPasswordShake(false), 600);
 				return setNextLoading(false);
 			}
-
-			if (kitchenUsername) router.push("/kitchen");
-			else router.push("/dashboard");
 		} else {
 			const res = await fetch(`/api/baseProfile?email=${email}`);
 			const profile = await res.json();

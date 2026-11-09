@@ -1,4 +1,6 @@
 .menuEditorModal {
+	min-width: 0;
+
 	.heading {
 		font-variation-settings: "wdth" 85, "wght" 600;
 
@@ -13,12 +15,24 @@
 		gap: 12px;
 		margin-top: 14px;
 
+		.field {
+			width: 100%;
+			min-width: 0;
+		}
+
+		.xtrSelect,
+		.xtrSelect__control {
+			width: 100%;
+			min-width: 0;
+		}
+
 		.fieldRow {
 			display: flex;
 			gap: 12px;
 
 			> * {
 				flex: 1;
+				min-width: 0;
 			}
 		}
 
