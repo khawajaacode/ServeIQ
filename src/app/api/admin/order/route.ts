@@ -12,7 +12,7 @@ export async function GET() {
 		await connectDB();
 		const session = await requireAdminSession();
 
-		const restaurantID = session?.username;
+		const restaurantID = session.username;
 		const orders =
 			((await Orders.find({ restaurantID })
 				.populate<{ customer: TCustomer }>("customer")

@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 		if (typeof password !== "string" || !password) throw { status: 400, message: "Password Required" };
 		if (typeof newPassword !== "string" || newPassword.length < 6) throw { status: 400, message: "New password must be at least 6 characters long" };
 
-		const account = await Accounts.findOne<TAccount>({ username: session?.username });
+		const account = await Accounts.findOne<TAccount>({ username: session.username });
 
 		if (!account) throw { status: 500, message: "Something went wrong" };
 

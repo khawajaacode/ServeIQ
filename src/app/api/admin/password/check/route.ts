@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
 		if (typeof password !== "string" || !password) throw { status: 400, message: "Password Required" };
 
-		const account = await Accounts.findOne<TAccount>({ username: session?.username });
+		const account = await Accounts.findOne<TAccount>({ username: session.username });
 
 		if (!account) throw { status: 500, message: "Something went wrong" };
 

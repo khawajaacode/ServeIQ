@@ -26,7 +26,7 @@ const LandingSection = () => {
 
 		const overlayX = maxOverlayTranslate * ((event.pageX - width) / width);
 		const overlayY = maxOverlayTranslate * ((event.pageY - height) / height);
-		if (ref?.current) ref.current.style.transform = `translate(${overlayX}%, ${overlayY}%)`;
+		if (ref.current) ref.current.style.transform = `translate(${overlayX}%, ${overlayY}%)`;
 	};
 
 	useEffect(() => {

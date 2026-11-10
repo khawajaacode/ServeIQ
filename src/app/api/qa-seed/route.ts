@@ -12,7 +12,7 @@ import { CatchNextResponse } from "#utils/helper/common";
 import empire from "../refreshDemoData/_data/empire/empire";
 import starbucks from "../refreshDemoData/_data/starbucks/starbucks";
 
-const deleteData = async (ids: string[]) => {
+const deleteData = (ids: string[]) => {
 	const models = [
 		{ model: Menus, name: "Menus" },
 		{ model: Kitchens, name: "Kitchens" },

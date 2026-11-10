@@ -49,7 +49,9 @@ export async function POST(req: Request) {
 					const found = names.map((n: string) => menuMap.get(n.toLowerCase())).filter((i): i is TMenu => !!i);
 					if (found.length) toolResults.push(found);
 				}
-			} catch {}
+			} catch (error) {
+				console.error("[AI] Failed to parse menu references", error);
+			}
 		}
 
 		return Response.json({ text, toolResults });

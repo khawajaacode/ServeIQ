@@ -38,5 +38,3 @@ export const models = Object.fromEntries(
 		return [platform, provider(model)];
 	})
 ) as Record<AIPlatform, AIProvider>;
-
-export const getModel = (provider: AIPlatform) => models[provider];

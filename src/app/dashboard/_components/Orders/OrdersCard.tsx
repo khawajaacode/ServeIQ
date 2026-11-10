@@ -85,7 +85,7 @@ const OrdersCard = (props: TOrdersCard) => {
 		<div
 			className={classList}
 			onClick={() => {
-				!(active || history) && setReject?.({ _id: null, details: false });
+				if (!(active || history)) setReject?.({ _id: null, details: false });
 				activate(data._id.toString());
 			}}
 		>

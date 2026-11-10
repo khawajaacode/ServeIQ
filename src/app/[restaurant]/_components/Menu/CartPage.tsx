@@ -33,10 +33,6 @@ const CartPage = (props: TCartPageProps) => {
 			return setBottomBarActive(false);
 		}
 
-		if (props.selectedProducts.length === 0) {
-			// return endOrder();
-		}
-
 		if (await placeOrder(selectedProducts)) resetSelectedProducts();
 	};
 	const onCancelOrder = async () => {
@@ -58,12 +54,6 @@ const CartPage = (props: TCartPageProps) => {
 
 		if (order?.table && order?.table !== table) cancelAndSignout();
 	}, [cancelOrder, order, table]);
-
-	// useEffect(() => {
-	// 	if (userOrderEnd) {
-	// 		setSideSheetHeading(['Order', 'Invoice']);
-	// 	}
-	// }, [userOrderEnd, setSideSheetHeading]);
 
 	if (!(props.selectedProducts.length || order?.products?.length)) {
 		return (
@@ -183,7 +173,6 @@ interface TCartPageProps {
 	increaseProductQuantity: (product: TMenuCustom) => void;
 	resetSelectedProducts: () => void;
 	selectedProducts: TMenuCustom[];
-	setSideSheetHeading: (heading: [string, string]) => void;
 }
 
 type TMenuCustom = TMenu & { quantity: number };

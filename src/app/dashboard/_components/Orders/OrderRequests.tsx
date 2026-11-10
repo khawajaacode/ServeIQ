@@ -53,7 +53,7 @@ const OrderRequests = (props: TOrderRequestsProps) => {
 								active={activeCardID === data._id.toString()}
 								busy={orderActionLoading}
 								data={data}
-								details={!!rejectCard?._id && rejectCard.details}
+								details={!!rejectCard._id && rejectCard.details}
 								key={i}
 								reject={rejectCard._id === data._id.toString()}
 								setReject={setRejectCard}

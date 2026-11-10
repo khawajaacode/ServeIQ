@@ -51,13 +51,9 @@ const ScannerClient = () => {
 	}, [enumerateDevices]);
 
 	useEffect(() => {
-		if (devices && devices.length > 0 && !deviceId) {
+		if (devices.length > 0 && !deviceId) {
 			const backCamera = devices.find((d) => d.label.toLowerCase().includes("back") || d.label.toLowerCase().includes("environment"));
-			if (backCamera) {
-				setDeviceId(backCamera.deviceId);
-			} else if (devices.length > 0) {
-				setDeviceId(devices.at(-1)?.deviceId);
-			}
+			setDeviceId(backCamera?.deviceId ?? devices.at(-1)?.deviceId);
 		}
 	}, [devices, deviceId]);
 
@@ -95,7 +91,7 @@ const ScannerClient = () => {
 
 	const handleScan = (detectedCodes: unknown) => {
 		const codes = detectedCodes as IDetectedBarcode[];
-		if (codes && codes.length > 0 && !isScanning) {
+		if (codes.length > 0 && !isScanning) {
 			const result = codes[0];
 			const url = result.rawValue || result.raw_value;
 

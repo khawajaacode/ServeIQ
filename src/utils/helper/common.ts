@@ -1,4 +1,3 @@
-import forEach from "lodash/forEach";
 import type { ReadonlyURLSearchParams } from "next/navigation";
 import { NextResponse } from "next/server";
 
@@ -17,7 +16,7 @@ export const isEmailValid = (email?: string) => {
 
 export const createQueryString = (searchParams: ReadonlyURLSearchParams, query: Record<string, string>) => {
 	const params = new URLSearchParams(searchParams);
-	forEach(query, (value, key) => params.set(key, value));
+	Object.entries(query).forEach(([key, value]) => params.set(key, value));
 	return params.toString();
 };
 

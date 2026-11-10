@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { capitalize } from "xtreme-ui";
 
 import { ChatInterface } from "#components/chatbot/Chat";
 import { CustomerProvider } from "#components/context";
@@ -25,9 +24,9 @@ export async function generateMetadata({ params }: IRestaurantProps): Promise<Me
 	const { restaurant } = await params;
 	const profile = await getRestaurantProfile(restaurant);
 	if (!profile) notFound();
-	const name = profile?.name ?? capitalize(restaurant);
+	const { name } = profile;
 	const description =
-		profile?.description ?? `Order food online from ${name}. Browse the menu, customize your order, and enjoy contactless dining powered by ${SITE_NAME}.`;
+		profile.description ?? `Order food online from ${name}. Browse the menu, customize your order, and enjoy contactless dining powered by ${SITE_NAME}.`;
 
 	return buildMetadata({
 		title: `${name} — Order Online`,
@@ -40,7 +39,7 @@ const Restaurant = async ({ params }: IRestaurantProps) => {
 	const { restaurant } = await params;
 	const profile = await getRestaurantProfile(restaurant);
 	if (!profile) notFound();
-	const name = profile?.name ?? capitalize(restaurant);
+	const { name } = profile;
 
 	return (
 		<CustomerProvider>
@@ -50,10 +49,10 @@ const Restaurant = async ({ params }: IRestaurantProps) => {
 					"@type": "Restaurant",
 					name,
 					url: `${SITE_URL}/${restaurant}`,
-					...(profile?.description && { description: profile.description }),
-					...(profile?.address && { address: { "@type": "PostalAddress", streetAddress: profile.address } }),
-					...(profile?.cover && { image: profile.cover }),
-					...(profile?.categories?.length && { servesCuisine: profile.categories }),
+					...(profile.description && { description: profile.description }),
+					...(profile.address && { address: { "@type": "PostalAddress", streetAddress: profile.address } }),
+					...(profile.cover && { image: profile.cover }),
+					...(profile.categories?.length && { servesCuisine: profile.categories }),
 					hasMenu: { "@type": "Menu", url: `${SITE_URL}/${restaurant}?tab=menu` },
 					potentialAction: {
 						"@type": "OrderAction",

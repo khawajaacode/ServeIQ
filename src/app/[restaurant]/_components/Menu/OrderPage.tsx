@@ -31,7 +31,7 @@ const OrderPage = () => {
 	const [sideSheetOpen, setSideSheetOpen] = useState(false);
 	const [topHeading, setTopHeading] = useState(["Menu", "Category"]);
 	const [orderHeading, setOrderHeading] = useState(["Explore", "Menu"]);
-	const [sideSheetHeading, setSideSheetHeading] = useState(["Your", "Order"]);
+	const sideSheetHeading = ["Your", "Order"];
 
 	const [searchActive, setSearchActive] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
@@ -260,7 +260,6 @@ const OrderPage = () => {
 						increaseProductQuantity={increaseProductQuantity}
 						resetSelectedProducts={() => setSelectedProducts([])}
 						selectedProducts={selectedProducts}
-						setSideSheetHeading={setSideSheetHeading}
 					/>
 				)}
 			</SideSheet>

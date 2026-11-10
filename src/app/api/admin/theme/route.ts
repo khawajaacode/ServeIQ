@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
 		if (!isValidThemeColor(themeColor)) throw { status: 400, message: "Valid theme color is required" };
 
-		const profile = await Profiles.findOne<TProfile>({ restaurantID: session?.username });
+		const profile = await Profiles.findOne<TProfile>({ restaurantID: session.username });
 
 		if (!profile) throw { status: 500, message: "Something went wrong" };
 

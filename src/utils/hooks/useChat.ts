@@ -8,11 +8,6 @@ interface UseChatProps {
 	restaurantId: string;
 }
 
-const sanitizeAssistantHtml = (content: string) =>
-	content
-		.replace(/<\s*(\/?)\s*(ul|li|b|br)\b[^>]*>/gi, "<$1$2>")
-		.replace(/<[^>]*>/g, "");
-
 export const useChat = ({ restaurantId, isAuthenticated, initialMessages = [] }: UseChatProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
@@ -41,7 +36,7 @@ export const useChat = ({ restaurantId, isAuthenticated, initialMessages = [] }:
 			const data = await sendChatMessage([...historyToUse, userMessage], restaurantId);
 			const assistantMessage = createMessage(
 				"assistant",
-				sanitizeAssistantHtml(data.text || ""),
+				data.text || "",
 				data.toolResults
 			);
 			setMessages((prev) => [...prev, assistantMessage]);

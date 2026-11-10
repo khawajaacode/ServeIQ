@@ -32,10 +32,10 @@ const MenuEditor = () => {
 		else setRightCategoryScroll(false);
 	};
 	const categoryScrollLeft = () => {
-		if (categories?.current) categories.current.scrollLeft -= 400;
+		if (categories.current) categories.current.scrollLeft -= 400;
 	};
 	const categoryScrollRight = () => {
-		if (categories?.current) categories.current.scrollLeft += 400;
+		if (categories.current) categories.current.scrollLeft += 400;
 	};
 	const onHide = async (itemId: string, hidden: boolean) => {
 		setHideSettingsLoading((v) => [...v, itemId]);

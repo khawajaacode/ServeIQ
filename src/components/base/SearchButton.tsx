@@ -9,7 +9,7 @@ const SearchButton = (props: TSearchButton) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	return (
-		<div className="search" onClick={() => inputRef?.current?.focus()}>
+		<div className="search" onClick={() => inputRef.current?.focus()}>
 			<input
 				onBlur={() => setSearchActive(false)}
 				onChange={(event) => setValue(event.target.value)}

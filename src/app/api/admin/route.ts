@@ -10,7 +10,7 @@ export async function GET() {
 		await connectDB();
 		const session = await requireAdminSession();
 
-		const account = await Accounts.findOne<TAccount>({ username: session?.username }).populate("profile").populate("tables").populate("menus").lean();
+		const account = await Accounts.findOne<TAccount>({ username: session.username }).populate("profile").populate("tables").populate("menus").lean();
 
 		if (!account) throw { status: 500, message: "Unable to fetch data" };
 
