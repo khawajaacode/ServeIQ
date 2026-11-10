@@ -43,30 +43,34 @@ const MenuEditorModal = (props: TMenuEditorModalProps) => {
 		if (!veg) return toast.warn("Food type (veg / non-veg) is required");
 
 		setLoading(true);
-		const req = await fetch("/api/admin/menu", {
-			method: "POST",
-			body: JSON.stringify({
-				category,
-				description,
-				foodType: foodType || undefined,
-				image,
-				itemId: item?._id?.toString(),
-				name: name.trim(),
-				price: Number(price),
-				taxPercent: Number(taxPercent),
-				veg,
-			}),
-		});
-		const res = await req.json();
+		try {
+			const req = await fetch("/api/admin/menu", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					category,
+					description,
+					foodType: foodType || undefined,
+					image,
+					itemId: item?._id?.toString(),
+					name: name.trim(),
+					price: Number(price),
+					taxPercent: Number(taxPercent),
+					veg,
+				}),
+			});
+			const res = await req.json().catch(() => null);
 
-		if (res?.status === 200) {
-			toast.success(res?.message);
-			await onSaved();
-			onClose();
-		} else {
-			toast.error(res?.message);
+			if (req.ok && res?.status === 200) {
+				toast.success(res?.message);
+				await onSaved();
+				onClose();
+			} else toast.error(res?.message || "Unable to save menu item");
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Unable to save menu item");
+		} finally {
+			setLoading(false);
 		}
-		setLoading(false);
 	};
 
 	return (
@@ -79,8 +83,19 @@ const MenuEditorModal = (props: TMenuEditorModalProps) => {
 					<Spinner fullpage label={isEdit ? "Updating menu item..." : "Adding menu item..."} />
 				) : (
 					<div className="fields">
-						<Textfield className="field" onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setName(e.target.value)} placeholder="Item name" value={name} />
-						<Textfield className="field" onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDescription(e.target.value)} placeholder="Description" textarea value={description} />
+						<Textfield
+							className="field"
+							onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setName(e.target.value)}
+							placeholder="Item name"
+							value={name}
+						/>
+						<Textfield
+							className="field"
+							onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDescription(e.target.value)}
+							placeholder="Description"
+							textarea
+							value={description}
+						/>
 						<Select
 							className="field"
 							clearable
@@ -90,14 +105,45 @@ const MenuEditorModal = (props: TMenuEditorModalProps) => {
 							value={category}
 						/>
 						<div className="fieldRow">
-							<Textfield className="field" onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setPrice(e.target.value)} placeholder="Price (PKR)" type="number" value={price} />
-							<Textfield className="field" onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setTaxPercent(e.target.value)} placeholder="Tax %" type="number" value={taxPercent} />
+							<Textfield
+								className="field"
+								onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setPrice(e.target.value)}
+								placeholder="Price (PKR)"
+								type="number"
+								value={price}
+							/>
+							<Textfield
+								className="field"
+								onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setTaxPercent(e.target.value)}
+								placeholder="Tax %"
+								type="number"
+								value={taxPercent}
+							/>
 						</div>
 						<div className="fieldRow">
-							<Select className="field" clearable onChange={(value?: string) => setVeg(value ?? "")} options={vegOptions} placeholder="Veg / Non-Veg" value={veg} />
-							<Select className="field" clearable onChange={(value?: string) => setFoodType(value ?? "")} options={foodTypeOptions} placeholder="Food taste (optional)" value={foodType} />
+							<Select
+								className="field"
+								clearable
+								onChange={(value?: string) => setVeg(value ?? "")}
+								options={vegOptions}
+								placeholder="Veg / Non-Veg"
+								value={veg}
+							/>
+							<Select
+								className="field"
+								clearable
+								onChange={(value?: string) => setFoodType(value ?? "")}
+								options={foodTypeOptions}
+								placeholder="Food taste (optional)"
+								value={foodType}
+							/>
 						</div>
-						<Textfield className="field" onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setImage(e.target.value)} placeholder="Image URL (optional)" value={image} />
+						<Textfield
+							className="field"
+							onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setImage(e.target.value)}
+							placeholder="Image URL (optional)"
+							value={image}
+						/>
 						<div className="actions">
 							<Button disabled={loading} icon="f00d" iconType="solid" onClick={onClose} type="secondaryDanger" />
 							<Button icon="f00c" iconType="solid" label="Save" loading={loading} onClick={onSave} />

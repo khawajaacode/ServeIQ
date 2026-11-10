@@ -1,4 +1,5 @@
 /* eslint-disable react/no-danger */
+import Script from "next/script";
 import type { ReactNode } from "react";
 
 import { themeController } from "xtreme-ui";
@@ -12,10 +13,8 @@ export default async function RootLayout({ children }: IRootProps) {
 	const themeColor = await getThemeColor();
 	return (
 		<>
-			<head>
-				<script dangerouslySetInnerHTML={{ __html: themeController({ color: themeColor }) }} suppressHydrationWarning />
-			</head>
-			<body suppressHydrationWarning>{children}</body>
+			<Script dangerouslySetInnerHTML={{ __html: themeController({ color: themeColor }) }} id="dashboard-theme" />
+			{children}
 		</>
 	);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { Spinner, themeController } from "xtreme-ui";
@@ -39,12 +40,8 @@ export default function Logout() {
 
 	return (
 		<>
-			<head>
-				<script dangerouslySetInnerHTML={{ __html: themeController({ color: DEFAULT_THEME_COLOR }) }} suppressHydrationWarning />
-			</head>
-			<body>
-				<Spinner fullpage label="Signing out..." />
-			</body>
+			<Script dangerouslySetInnerHTML={{ __html: themeController({ color: DEFAULT_THEME_COLOR }) }} id="logout-theme" />
+			<Spinner fullpage label="Signing out..." />
 		</>
 	);
 }

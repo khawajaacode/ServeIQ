@@ -31,38 +31,48 @@ const LoginSection = () => {
 
 	const [password, setPassword] = useState("");
 	const [passwordShake, setPasswordShake] = useState(false);
+	const profileName =
+		profile?.name ?? dashboard?.name ?? (session.data?.customer ? `${session.data.customer.fname} ${session.data.customer.lname}` : "Restaurant account");
+	const profileAddress = profile?.address ?? dashboard?.address ?? session.data?.customer?.phone;
 
 	const onNext = async () => {
 		setNextLoading(true);
-		if (profile) {
-			const res = await signIn("restaurant", {
-				redirect: false,
-				username: email,
-				...(showKitchen && { kitchen: kitchenUsername }),
-				password,
-				callbackUrl: `${window.location.origin}`,
-			});
+		try {
+			if (profile) {
+				const res = await signIn("restaurant", {
+					redirect: false,
+					username: email,
+					...(showKitchen && { kitchen: kitchenUsername }),
+					password,
+					callbackUrl: `${window.location.origin}`,
+				});
 
-			if (res?.error) {
-				toast.error(res?.error);
-				setPassword("");
-				setPasswordShake(true);
-				setTimeout(() => setPasswordShake(false), 600);
-				return setNextLoading(false);
+				if (res?.error) {
+					toast.error(res?.error);
+					setPassword("");
+					setPasswordShake(true);
+					setTimeout(() => setPasswordShake(false), 600);
+				}
+				return;
 			}
-		} else {
-			const res = await fetch(`/api/baseProfile?email=${email}`);
-			const profile = await res.json();
 
-			if (profile.status === 404) {
+			const res = await fetch(`/api/baseProfile?email=${email}`);
+			const accountProfile = await res.json().catch(() => null);
+
+			if (res.status === 404) {
 				toast.error("Account does not exist!");
 				setEmailShake(true);
 				setTimeout(() => setEmailShake(false), 600);
+			} else if (!res.ok) {
+				toast.error(accountProfile?.message || "Unable to look up this account");
 			} else {
-				setProfile(profile);
+				setProfile(accountProfile);
 			}
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Unable to sign in");
+		} finally {
+			setNextLoading(false);
 		}
-		setNextLoading(false);
 	};
 	const logout = () => {
 		setThemeColor(DEFAULT_THEME_COLOR);
@@ -111,8 +121,8 @@ const LoginSection = () => {
 							<>
 								<Avatar size="mini" src={profile?.avatar ?? dashboard?.avatar ?? session.data?.restaurant?.avatar ?? ""} />
 								<div className="details">
-									<p className="name"> {profile?.name ?? dashboard?.name ?? `${session.data?.customer?.fname} ${session.data?.customer?.lname}`} </p>
-									<p className="address">{profile?.address ?? dashboard?.address ?? session.data?.customer?.phone}</p>
+									<p className="name">{profileName}</p>
+									<p className="address">{profileAddress}</p>
 								</div>
 								<Button className="logout" icon={loggedIn ? "f011" : "f304"} loading={logoutLoading} onClick={logout} size="mini" />
 							</>

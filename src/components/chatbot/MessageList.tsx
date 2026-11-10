@@ -1,5 +1,6 @@
 import { memo, type RefObject } from "react";
 import { Icon } from "xtreme-ui";
+import { formatAssistantText } from "#utils/ai/format-assistant-text";
 import type { ChatMessage } from "../../types/chat";
 import { MenuCard } from "./MenuCard";
 import "./messageList.scss";
@@ -32,6 +33,7 @@ export const MessageList = memo(({ messages, isLoading, bottomRef, onResizeStart
 											hour: "numeric",
 											minute: "numeric",
 											hour12: true,
+											timeZone: "Asia/Karachi",
 										}).format(message.createdAt)}
 									</span>
 								</div>
@@ -42,7 +44,7 @@ export const MessageList = memo(({ messages, isLoading, bottomRef, onResizeStart
 									(message.isError ? (
 										<div className="assistantText">{message.content}</div>
 									) : (
-										<div className="assistantText" dangerouslySetInnerHTML={{ __html: message.content }} />
+										<div className="assistantText">{formatAssistantText(message.content)}</div>
 									))}
 								{message.toolResults && message.toolResults.length > 0 && (
 									<div className="menuSuggestions">

@@ -142,7 +142,7 @@ const OrderPage = () => {
 	}, [session]);
 
 	useEffect(() => {
-		if (session.status === "authenticated" && session.data?.restaurant?.username !== restaurant?.username) signOut();
+		if (session.status === "authenticated" && session.data?.role === "customer" && session.data.restaurant?.username !== restaurant?.username) signOut();
 	}, [restaurant?.username, session.data?.restaurant?.username, session.status]);
 
 	return (
@@ -239,7 +239,7 @@ const OrderPage = () => {
 											}
 											restrictOrder={!eligibleToOrder}
 											setShowInfo={(v) => setShowInfoCard(v)}
-											show={!!item.image}
+											show={!item.image}
 											showInfo={item._id.toString() === showInfoCard.toString()}
 										/>
 									))}

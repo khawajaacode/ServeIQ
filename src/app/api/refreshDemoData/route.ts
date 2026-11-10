@@ -1,14 +1,11 @@
-import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-
 import connectDB from "#utils/database/connect";
 import { Accounts } from "#utils/database/models/account";
 import { Kitchens } from "#utils/database/models/kitchen";
 import { Menus } from "#utils/database/models/menu";
 import { Profiles } from "#utils/database/models/profile";
 import { Tables } from "#utils/database/models/table";
+import { requireAdminSession } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
-import { authOptions } from "#utils/helper/authHelper";
 
 import empire from "./_data/empire/empire";
 import starbucks from "./_data/starbucks/starbucks";
@@ -49,22 +46,18 @@ const createData = async (props: TDocumentData) => {
 
 	return {
 		processTime: (performance.now() - start) / 1000,
-		account: newAccount,
-		profile: newProfile,
-		menus: newMenus,
-		kitchens: newKitchen,
-		tables: newTables,
+		account: newAccount._id,
+		profile: newProfile._id,
+		menus: newMenus.length,
+		kitchens: newKitchen.length,
+		tables: newTables.length,
 	};
 };
 
-export async function GET() {
-	const session = await getServerSession(authOptions);
-	if (!session || session.role !== "admin") {
-		return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-	}
-
-	await connectDB();
+export async function POST() {
 	try {
+		await requireAdminSession();
+		await connectDB();
 		const start = performance.now();
 		const deleteResult = await deleteData(["empire", "starbucks"]);
 		const [empireResult, starbucksResult] = await Promise.all([createData(empire), createData(starbucks)]);

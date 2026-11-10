@@ -25,9 +25,9 @@ const savouries = [
 		image: "https://b.zmtcdn.com/data/dish_photos/124/3c99abd0beafe902d89913741a963124.jpg",
 	},
 	{
-		name: "Masala Egg Croissant",
+		name: "Lahori Spiced Egg Croissant",
 		description:
-			"A South Indian Malabari inspired spiced egg filling with hints of coconut encased in a croissant with sesame seeds on top. Serving size (g/ml) - 180g/591kcal. Allergen - Contains Wheat, Milk, Egg. An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
+			"A Pakistani-style spicy egg filling with hints of coconut encased in a croissant with sesame seeds on top. Serving size (g/ml) - 180g/591kcal. Allergen - Contains Wheat, Milk, Egg. An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
 		category: "Savouries",
 		price: 500,
 		foodType: "spicy",
@@ -50,11 +50,11 @@ const sandwiches = [
 	{
 		name: "Chicken Tikka Bun",
 		description:
-			"A tangy chilli paneer filling topped with sliced cheese in a herbed bun. Serving size (g/ml) - 160g/598kcal. Allergen - Soy, Wheat, Milk An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
+			"A tangy chicken tikka filling topped with sliced cheese in a herbed bun. Serving size (g/ml) - 160g/598kcal. Allergen - Soy, Wheat, Milk An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
 		category: "Sandwiches",
 		price: 500,
 		foodType: "spicy",
-		veg: "veg",
+		veg: "non-veg",
 		image: "https://b.zmtcdn.com/data/dish_photos/ad6/3cc2f43fdc1598b665cbff2ef39e8ad6.jpg",
 	},
 	{
@@ -110,7 +110,7 @@ const sandwiches = [
 	{
 		name: "Coriander Cream Cheese Bagel",
 		description:
-			"Gunpowder and cream cheese with coriander, in a sesame and poppy bagel. Contains - Wheat, Milk 150 g | 545 kcal An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
+			"Pakistani-inspired spices, cream cheese, and coriander in a sesame and poppy seed bagel. Contains - Wheat, Milk 150 g | 545 kcal An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
 		category: "Sandwiches",
 		price: 600,
 		foodType: "spicy",
@@ -143,11 +143,11 @@ const wraps = [
 	{
 		name: "Chicken Paratha Roll",
 		description:
-			"Tangy paneer and vegetable filling wrapped in spinach paratha. Serving size (g/ml) - 180g/465kcal. Allergen - Contains Wheat, Milk, Soy, Nut An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
+			"Spiced chicken and vegetables wrapped in spinach paratha. Serving size (g/ml) - 180g/465kcal. Allergen - Contains Wheat, Milk, Soy, Nut An average active adult requires 2000 kcal energy per day; however, calorie needs may vary.",
 		category: "Wraps",
 		price: 700,
 		foodType: "spicy",
-		veg: "veg",
+		veg: "non-veg",
 		image: "https://b.zmtcdn.com/data/dish_photos/9ab/cfa9373790b5cb34bee6488a65a2c9ab.jpg",
 	},
 ];
@@ -312,7 +312,7 @@ const coldBeverages = [
 	{
 		name: "Karachi Cold Brew",
 		description:
-			"Starbucks Kenya coffee is freshly ground and then steeped for 48 hours. This artisanal process results in deliciously iced coffee that is served over ice, unsweetened. Energy - Nil , Allergen - Nil An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
+			"Kenyan coffee is freshly ground and then steeped for 48 hours. This artisanal process results in deliciously iced coffee that is served over ice, unsweetened. Energy - Nil , Allergen - Nil An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
 		category: "Cold Beverages",
 		price: 800,
 		foodType: "sweet",
@@ -332,7 +332,7 @@ const coldBeverages = [
 	{
 		name: "Vanilla Cream Cold Brew",
 		description:
-			"Cold brew with Vanilla Sweet Cream is made with Starbucks cold brew over ice and topped with a house made vanilla sweet cream, which floats on top of the beverage before slowly cascading down. Energy - Tall (354ml) - 63 kcal / Grande (473ml) - 84 kcal / Venti (591ml) 104.97 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
+			"Cold brew with Vanilla Sweet Cream is made with our cold brew over ice and topped with a house made vanilla sweet cream, which floats on top of the beverage before slowly cascading down. Energy - Tall (354ml) - 63 kcal / Grande (473ml) - 84 kcal / Venti (591ml) 104.97 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
 		category: "Cold Beverages",
 		price: 550,
 		foodType: "sweet",
@@ -382,7 +382,7 @@ const coldBeverages = [
 	{
 		name: "Pakistani Chocolate Milkshake",
 		description:
-			"Our Starbucks signature chocolate perfected for you as a smooth and delightful milkshake. Happiness in every sip. Energy - Tall (354ml) - 632 kcal / Grande (473ml) - 825 kcal / Venti (591ml) 1050 kcal. Allergen - Contains Wheat, Milk, Soy. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
+			"Our signature chocolate perfected for you as a smooth and delightful milkshake. Happiness in every sip. Energy - Tall (354ml) - 632 kcal / Grande (473ml) - 825 kcal / Venti (591ml) 1050 kcal. Allergen - Contains Wheat, Milk, Soy. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
 		category: "Cold Beverages",
 		price: 600,
 		foodType: "sweet",
@@ -402,7 +402,7 @@ const coldBeverages = [
 	{
 		name: "Vanilla Milkshake",
 		description:
-			"Your favourite Vanilla milkshake is now at Starbucks. A perfect delight for any mood. Energy - Tall (354ml) - 531 kcal / Grande (473ml) - 700 kcal / Venti (591ml) 920 kcal. Allergen - Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
+			"Your favourite Vanilla milkshake is now at Brew Café Pakistan. A perfect delight for any mood. Energy - Tall (354ml) - 531 kcal / Grande (473ml) - 700 kcal / Venti (591ml) 920 kcal. Allergen - Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
 		category: "Cold Beverages",
 		price: 800,
 		foodType: "sweet",
@@ -415,7 +415,7 @@ const hotBeverages = [
 	{
 		name: "Doodh Patti Chai",
 		description:
-			"Your favourite South Indian filter coffee prepared using a blend of our medium and dark roast coffees. Unreasonably perfect. Energy - Hot - Picco (180ml) / Short (236ml) - 226 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
+			"Your favourite Pakistani doodh patti, prepared with tea and milk. Unreasonably perfect. Energy - Hot - Small (180ml) / Short (236ml) - 226 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
 		category: "Hot Beverages",
 		price: 550,
 		foodType: "sweet",
@@ -425,7 +425,7 @@ const hotBeverages = [
 	{
 		name: "Kashmiri Chai",
 		description:
-			"Our traditional masala chai with abundance of strong Indian spices and flavourful handpicked teas. Energy - Hot - Picco (180ml) - 161 kcal / Short (237ml) - 237 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
+			"Traditional Kashmiri chai, slowly simmered with green tea, cardamom, and a touch of spice, served with milk. Energy - Hot - Small (180ml) - 161 kcal / Short (237ml) - 237 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
 		category: "Hot Beverages",
 		price: 650,
 		foodType: "sweet",
@@ -435,7 +435,7 @@ const hotBeverages = [
 	{
 		name: "Elaichi Doodh Patti",
 		description:
-			"Our traditional chai with abundance of Cardamom and flavourful handpicked teas. Energy - Hot - Picco (180ml) - 161 kcal / Short (237ml) - 236 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
+			"Our traditional chai with abundance of Cardamom and flavourful handpicked teas. Energy - Hot - Small (180ml) - 161 kcal / Short (237ml) - 236 kcal. Allergen - Contains Milk. An average active adult requires 2000 kcal energy per day, however, calorie needs may vary.",
 		category: "Hot Beverages",
 		price: 600,
 		foodType: "sweet",
@@ -475,7 +475,7 @@ const hotBeverages = [
 	{
 		name: "Flat White",
 		description:
-			"Expertly steamed milk poured over shots of ristretto and finished with a Starbucks signature dot. Allergen - Contains Milk, Short: 237 ML, 104 kcal, Tall: 354 ML, 173 kcal, Grande: 473 ML, 220 kcal, Venti: 591 ML, 289 kcal",
+			"Expertly steamed milk poured over shots of ristretto and finished with our signature dot. Allergen - Contains Milk, Short: 237 ML, 104 kcal, Tall: 354 ML, 173 kcal, Grande: 473 ML, 220 kcal, Venti: 591 ML, 289 kcal",
 		category: "Hot Beverages",
 		price: 550,
 		foodType: "sweet",

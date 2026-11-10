@@ -13,11 +13,11 @@ const account = {
 
 const profile = {
 	_id: new mongoose.Types.ObjectId(`${REF_STARBUCKS}${TYPE_PROFILE}${ID_SUFFIX}000001`),
-	name: "Starbucks Coffee",
+	name: "Brew Café Pakistan",
 	restaurantID: "starbucks",
 	description:
-		"coffee chain offering an extensive range of freshly brewed coffees, teas, and assorted beverages along with a selection of delectable snacks and pastries across numerous locations worldwide.",
-	address: "Indiranagar, Benagaluru",
+		"An Islamabad coffeehouse serving freshly brewed coffees, Pakistani chai, and a selection of snacks and pastries.",
+	address: "F-7, Islamabad",
 	themeColor: { h: 158, s: 100, l: 19 },
 	avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png",
 	cover: "https://b.zmtcdn.com/data/reviews_photos/c9f/cad697975e8e2871657b7df8ceea2c9f_1410727142.jpg",

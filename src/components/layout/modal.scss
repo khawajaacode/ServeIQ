@@ -41,11 +41,15 @@
 		opacity: 0;
 		display: flex;
 		width: 500px;
+		max-height: calc(100dvh - 32px);
+		box-sizing: border-box;
 		padding: 36px;
 		transform: scale(0) translate(50%, -50%);
 		transform-origin: top right;
 		border-radius: 25px;
-		overflow: hidden;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
 		box-shadow: 0 0 100px rgb(0 0 0 / 30%);
 		background-color: var(--colorBackgroundPrimary);
 		transition: all var(--modalDuration) ease-out, top var(--modalDuration) ease-in;
@@ -65,6 +69,7 @@
 
 			.modalPane {
 				width: 100%;
+				max-height: calc(100dvh - env(safe-area-inset-top) - 16px);
 				top: unset; bottom: 0; right: 0;
 				transform: translateY(0);
 				transition: all var(--modalDuration) ease-out;
@@ -74,6 +79,7 @@
 		.modalPane {
 			top: unset; bottom: 0; right: 0;
 			width: 100%;
+			max-height: calc(100dvh - env(safe-area-inset-top) - 16px);
 			opacity: 1;
 			transform: translateY(100%);
 			border-radius: 35px 35px 0 0;

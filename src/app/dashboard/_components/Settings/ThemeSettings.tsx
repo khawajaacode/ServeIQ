@@ -22,14 +22,23 @@ const ThemeSettings = () => {
 
 	const onSave = async () => {
 		setLoading(true);
-		const req = await fetch("/api/admin/theme", {
-			method: "POST",
-			body: JSON.stringify({ themeColor }),
-		});
-		const res = await req.json();
-		if (res?.status !== 200) toast.error(res?.message);
-		await profileMutate();
-		setLoading(false);
+		try {
+			const req = await fetch("/api/admin/theme", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ themeColor }),
+			});
+			const res = await req.json().catch(() => null);
+			if (!req.ok || res?.status !== 200) {
+				toast.error(res?.message || "Unable to apply theme");
+				return;
+			}
+			await profileMutate();
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Unable to apply theme");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (

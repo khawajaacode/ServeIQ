@@ -1,6 +1,7 @@
 .loginSection {
 	position: relative;
-	width: 100dvw;
+	box-sizing: border-box;
+	width: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -46,6 +47,7 @@
 
 		.loginCard {
 			position: absolute;
+			box-sizing: border-box;
 			width: 500px;
 			border-radius: 18px;
 			box-shadow:

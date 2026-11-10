@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 	keywords: [...SITE_KEYWORDS],
 	openGraph: {
 		type: "website",
-		locale: "en_US",
+		locale: "en_PK",
 		siteName: SITE_NAME,
 	},
 	twitter: { card: "summary_large_image" },

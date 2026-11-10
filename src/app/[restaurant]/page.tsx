@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { capitalize } from "xtreme-ui";
 
 import { ChatInterface } from "#components/chatbot/Chat";
@@ -23,6 +24,7 @@ const navItems = [
 export async function generateMetadata({ params }: IRestaurantProps): Promise<Metadata> {
 	const { restaurant } = await params;
 	const profile = await getRestaurantProfile(restaurant);
+	if (!profile) notFound();
 	const name = profile?.name ?? capitalize(restaurant);
 	const description =
 		profile?.description ?? `Order food online from ${name}. Browse the menu, customize your order, and enjoy contactless dining powered by ${SITE_NAME}.`;
@@ -37,6 +39,7 @@ export async function generateMetadata({ params }: IRestaurantProps): Promise<Me
 const Restaurant = async ({ params }: IRestaurantProps) => {
 	const { restaurant } = await params;
 	const profile = await getRestaurantProfile(restaurant);
+	if (!profile) notFound();
 	const name = profile?.name ?? capitalize(restaurant);
 
 	return (

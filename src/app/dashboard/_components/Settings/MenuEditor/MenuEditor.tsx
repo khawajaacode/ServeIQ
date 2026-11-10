@@ -16,6 +16,7 @@ const MenuEditor = () => {
 	const [editItem, setEditItem] = useState<TMenu>();
 	const [hideSettingsLoading, setHideSettingsLoading] = useState<string[]>([]);
 	const [category, setCategory] = useState(0);
+	const selectedCategory = profile?.categories?.[category];
 
 	const categories = useRef<HTMLDivElement>(null);
 
@@ -38,16 +39,25 @@ const MenuEditor = () => {
 	};
 	const onHide = async (itemId: string, hidden: boolean) => {
 		setHideSettingsLoading((v) => [...v, itemId]);
-		const req = await fetch("/api/admin/menu/hidden", {
-			method: "POST",
-			body: JSON.stringify({ itemId, hidden }),
-		});
-		const res = await req.json();
+		try {
+			const req = await fetch("/api/admin/menu/hidden", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ itemId, hidden }),
+			});
+			const res = await req.json().catch(() => null);
 
-		if (res?.status !== 200) toast.error(res?.message);
+			if (!req.ok) {
+				toast.error(res?.message || "Unable to update menu visibility");
+				return;
+			}
 
-		await profileMutate();
-		setHideSettingsLoading((v) => v.filter((item) => item !== itemId));
+			await profileMutate();
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Unable to update menu visibility");
+		} finally {
+			setHideSettingsLoading((v) => v.filter((item) => item !== itemId));
+		}
 	};
 	const onEdit = (item: TMenu) => {
 		setEditItem(item);
@@ -90,9 +100,17 @@ const MenuEditor = () => {
 					<div className="menuItemOptions" />
 				</div>
 				<div className="menuItemContainer">
-					{menus.map((item, id) => (
-						<MenuEditorItem hideSettingsLoading={hideSettingsLoading.includes(item._id.toString())} item={item} key={id} onEdit={onEdit} onHide={onHide} />
-					))}
+					{menus
+						.filter((item) => item.category === selectedCategory)
+						.map((item, id) => (
+							<MenuEditorItem
+								hideSettingsLoading={hideSettingsLoading.includes(item._id.toString())}
+								item={item}
+								key={id}
+								onEdit={onEdit}
+								onHide={onHide}
+							/>
+						))}
 				</div>
 			</div>
 			<Button className={`menuEditorAdd ${modalState ? "active" : ""}`} icon="2b" iconType="solid" onClick={() => setModalState("newState")} />

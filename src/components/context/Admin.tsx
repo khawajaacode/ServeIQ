@@ -1,4 +1,5 @@
 import noop from "lodash/noop";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { createContext, type ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -29,11 +30,13 @@ const sortByDate = (a: { updatedAt: string | number | Date }, b: { updatedAt: st
 
 export const AdminContext = createContext(AdminDefault);
 export const AdminProvider = ({ children }: TAdminProviderProps) => {
+	const session = useSession();
+	const isAdmin = session.status === "authenticated" && session.data.role === "admin";
 	const params = useSearchParams();
 	const _tab = params.get("tab");
 	const _subTab = params.get("subTab");
-	const { data: { profile, menus = [], tables = [] } = {}, isLoading: profileLoading, mutate: profileMutate } = useSWR("/api/admin", fetcher);
-	const { data: orderData = [], isLoading: orderLoading, mutate } = useSWR("/api/admin/order", fetcher, { refreshInterval: 5000 });
+	const { data: { profile, menus = [], tables = [] } = {}, isLoading: profileLoading, mutate: profileMutate } = useSWR(isAdmin ? "/api/admin" : null, fetcher);
+	const { data: orderData = [], isLoading: orderLoading, mutate } = useSWR(isAdmin ? "/api/admin/order" : null, fetcher, { refreshInterval: 5000 });
 	const [orderActionLoading, setOrderActionLoading] = useState(false);
 
 	const { orderRequest, orderActive, orderHistory } =
@@ -53,17 +56,30 @@ export const AdminProvider = ({ children }: TAdminProviderProps) => {
 	const orderAction = async (orderID: string, action: TOrderAction) => {
 		if (orderActionLoading) return;
 		setOrderActionLoading(true);
-		const req = await fetch("/api/admin/order/action", { method: "POST", body: JSON.stringify({ orderID, action }) });
-		const res = await req.json();
+		try {
+			const req = await fetch("/api/admin/order/action", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ orderID, action }),
+			});
+			const res = await req.json().catch(() => null);
 
-		if (!req.ok) toast.error(res?.message);
-		await mutate();
-		setOrderActionLoading(false);
+			if (!req.ok) {
+				toast.error(res?.message || "Unable to update order");
+				return;
+			}
+
+			await mutate();
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Unable to update order");
+		} finally {
+			setOrderActionLoading(false);
+		}
 	};
 
 	useEffect(() => {
-		mutate();
-	}, [mutate]);
+		if (isAdmin) mutate();
+	}, [isAdmin, mutate]);
 
 	return (
 		<AdminContext.Provider

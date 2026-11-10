@@ -1,5 +1,6 @@
 import pick from "lodash/pick";
-import type { AuthOptions } from "next-auth";
+import { getServerSession } from "next-auth";
+import type { AuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import connectDB from "#utils/database/connect";
@@ -129,4 +130,30 @@ export const authOptions: AuthOptions = {
 			return token;
 		},
 	},
+};
+
+type TAuthSession = Session;
+type TAdminSession = TAuthSession & { role: "admin"; username: string };
+type TCustomerSession = TAuthSession & {
+	role: "customer";
+	restaurant: NonNullable<TAuthSession["restaurant"]> & { username: string; table: string };
+	customer: NonNullable<TAuthSession["customer"]> & { _id: NonNullable<NonNullable<TAuthSession["customer"]>["_id"]> };
+};
+
+const isAdminSession = (session: TAuthSession | null): session is TAdminSession => Boolean(session && session.role === "admin" && session.username);
+const isCustomerSession = (session: TAuthSession | null): session is TCustomerSession =>
+	Boolean(session && session.role === "customer" && session.restaurant?.username && session.restaurant.table && session.customer?._id);
+
+export const requireAdminSession = async (): Promise<TAdminSession> => {
+	const session = await getServerSession(authOptions);
+	if (!session) throw { status: 401, message: "Authentication Required" };
+	if (!isAdminSession(session)) throw { status: 403, message: "Administrator access required" };
+	return session;
+};
+
+export const requireCustomerSession = async (): Promise<TCustomerSession> => {
+	const session = await getServerSession(authOptions);
+	if (!session) throw { status: 401, message: "Authentication Required" };
+	if (!isCustomerSession(session)) throw { status: 403, message: "Customer access required" };
+	return session;
 };

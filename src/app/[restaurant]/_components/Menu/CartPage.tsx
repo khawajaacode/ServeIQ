@@ -37,12 +37,10 @@ const CartPage = (props: TCartPageProps) => {
 			// return endOrder();
 		}
 
-		await placeOrder(selectedProducts);
-		resetSelectedProducts();
+		if (await placeOrder(selectedProducts)) resetSelectedProducts();
 	};
 	const onCancelOrder = async () => {
-		await cancelOrder();
-		resetSelectedProducts();
+		if (await cancelOrder()) resetSelectedProducts();
 	};
 
 	useEffect(() => {

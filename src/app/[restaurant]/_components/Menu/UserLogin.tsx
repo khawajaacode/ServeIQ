@@ -36,24 +36,30 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 			}, 400);
 		} else if (page === "signOTP" || page === "loginOTP") {
 			if (!params.get("table")) return toast.error("Please scan the QR Code");
+			if (!fname.trim() || !lname.trim()) return toast.error("Please enter your first and last name");
 
 			setBusy(true);
+			try {
+				const res = await signIn("customer", {
+					redirect: false,
+					restaurant: pathname.replaceAll("/", ""),
+					phone: phoneNumber,
+					fname: fname.trim(),
+					lname: lname.trim(),
+					table: params.get("table"),
+					callbackUrl: `${window.location.origin}`,
+				});
 
-			const res = await signIn("customer", {
-				redirect: false,
-				restaurant: pathname.replaceAll("/", ""),
-				phone: phoneNumber,
-				fname,
-				lname,
-				table: params.get("table"),
-				callbackUrl: `${window.location.origin}`,
-			});
-
-			if (res?.error) {
-				toast.error(res?.error);
+				if (res?.error) {
+					toast.error(res.error);
+					return;
+				}
+				setOpen(false);
+			} catch (error) {
+				toast.error(error instanceof Error ? error.message : "Unable to sign in");
+			} finally {
+				setBusy(false);
 			}
-			setOpen(false);
-			setBusy(false);
 		}
 	};
 

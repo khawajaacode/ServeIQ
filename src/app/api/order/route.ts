@@ -1,22 +1,19 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 
 import connectDB from "#utils/database/connect";
 import type { TCustomer } from "#utils/database/models/customer";
 import type { TMenu } from "#utils/database/models/menu";
 import { Orders, type TOrder, type TProduct } from "#utils/database/models/order";
-import { authOptions } from "#utils/helper/authHelper";
+import { requireCustomerSession } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
 
 export async function GET() {
 	try {
 		await connectDB();
-		const session = await getServerSession(authOptions);
+		const session = await requireCustomerSession();
 
-		if (!session) throw { status: 401, message: "Authentication Required" };
-
-		const restaurantID = session?.restaurant?.username;
-		const customer = session?.customer?._id;
+		const restaurantID = session.restaurant.username;
+		const customer = session.customer._id;
 		const order = (await Orders.findOne({ restaurantID, customer, state: "active" })
 			.populate<{ customer: TCustomer }>("customer")
 			.populate<{ products: { product: TMenu }[] }>("products.product")

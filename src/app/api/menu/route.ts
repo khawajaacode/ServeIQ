@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 		return NextResponse.json({
 			...omit(account, ["__v", "_id", "kitchens", "password", "profile", "menus", "tables"]),
 			profile: omit(account?.profile, ["__v", "_id"]),
-			menus: account?.menus.map((v: TMenu) => omit(v, ["__v"])),
+			menus: account?.menus.filter((v: TMenu) => !v.hidden).map((v: TMenu) => omit(v, ["__v"])),
 			tables: account?.tables.map((v: TTable) => omit(v, ["__v", "_id"])),
 		});
 	} catch (err) {

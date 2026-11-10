@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { themeController } from "xtreme-ui";
 import { DEFAULT_THEME_COLOR } from "#utils/constants/common";
 import { getThemeColor } from "#utils/database/helper/getThemeColor";
@@ -8,7 +9,7 @@ export default async function ScanPage() {
 
 	return (
 		<>
-			<script dangerouslySetInnerHTML={{ __html: themeController({ color }) }} suppressHydrationWarning />
+			<Script dangerouslySetInnerHTML={{ __html: themeController({ color }) }} id="scan-theme" />
 			<ScannerClient />
 		</>
 	);

@@ -11,7 +11,7 @@ export const scrollToSection = (section?: string) => {
 };
 
 export const isEmailValid = (email?: string) => {
-	const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+	const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	return emailPattern.test(email ?? "");
 };
 

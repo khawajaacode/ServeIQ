@@ -1,27 +1,27 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 
 import connectDB from "#utils/database/connect";
 import { Menus, type TMenu } from "#utils/database/models/menu";
-import { authOptions } from "#utils/helper/authHelper";
+import { requireAdminSession } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
 
 export async function POST(req: Request) {
 	try {
 		await connectDB();
-		const session = await getServerSession(authOptions);
 		const body = await req.json();
 
-		if (!session || !session.username) throw { status: 401, message: "Authentication Required" };
+		const session = await requireAdminSession();
 
-		const username = session.username;
+		const { username } = session;
 
 		const { itemId, name, description, category, price, taxPercent, foodType, veg, image, hidden } = body;
 
 		if (!name) throw { status: 400, message: "Menu item name is required" };
 		if (!category) throw { status: 400, message: "Menu item category is required" };
-		if (price === undefined || price === null || Number.isNaN(Number(price))) throw { status: 400, message: "Menu item price is required" };
-		if (taxPercent === undefined || taxPercent === null || Number.isNaN(Number(taxPercent))) throw { status: 400, message: "Menu item tax percent is required" };
+		if (price === undefined || price === null || !Number.isFinite(Number(price)) || Number(price) < 0)
+			throw { status: 400, message: "Menu item price must be a non-negative number" };
+		if (taxPercent === undefined || taxPercent === null || !Number.isFinite(Number(taxPercent)) || Number(taxPercent) < 0)
+			throw { status: 400, message: "Menu item tax percent must be a non-negative number" };
 		if (!veg) throw { status: 400, message: "Menu item food type (veg/non-veg) is required" };
 
 		const payload = {

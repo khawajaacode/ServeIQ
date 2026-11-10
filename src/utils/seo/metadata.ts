@@ -29,7 +29,7 @@ export function buildMetadata({ title, description, path = "", images }: Metadat
 			description: desc,
 			url,
 			siteName: SITE_NAME,
-			locale: "en_US",
+			locale: "en_PK",
 			type: "website",
 			...(images ? { images } : {}),
 		},

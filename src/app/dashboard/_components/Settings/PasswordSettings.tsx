@@ -42,38 +42,49 @@ const PasswordSettings = () => {
 		}
 
 		setLoading(true);
+		try {
+			const req = await fetch("/api/admin/password/change", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ password, newPassword }),
+			});
+			const res = await req.json().catch(() => null);
 
-		const req = await fetch("/api/admin/password/change", {
-			method: "POST",
-			body: JSON.stringify({ password, newPassword }),
-		});
-		const res = await req.json();
+			if (req.ok && res?.status === 200) toast.success(res?.message);
+			else {
+				toast.error(res?.message || "Unable to change password");
+				return;
+			}
 
-		if (res?.status === 200) toast.success(res?.message);
-		else toast.error(res?.message);
-
-		setAuthenticated(false);
-		setPassword("");
-		setNewPassword("");
-		setNewConfPassword("");
-		setLoading(false);
+			onClear();
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Unable to change password");
+		} finally {
+			setLoading(false);
+		}
 	};
 	const onPasswordKeyPress = async () => {
 		if (!authenticated) {
 			setLoading(true);
-			const req = await fetch("/api/admin/password/check", {
-				method: "POST",
-				body: JSON.stringify({ password }),
-			});
-			const res = await req.json();
+			try {
+				const req = await fetch("/api/admin/password/check", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ password }),
+				});
+				const res = await req.json().catch(() => null);
 
-			if (res?.status === 200) setAuthenticated(true);
-			else {
-				setPasswordShake(true);
-				setTimeout(() => setPasswordShake(false), 600);
-				toast.error(res?.message);
+				if (req.ok && res?.status === 200) setAuthenticated(true);
+				else {
+					setPasswordShake(true);
+					setTimeout(() => setPasswordShake(false), 600);
+					toast.error(res?.message || "Unable to verify password");
+				}
+			} catch (error) {
+				toast.error(error instanceof Error ? error.message : "Unable to verify password");
+			} finally {
+				setLoading(false);
 			}
-			setLoading(false);
 		}
 	};
 	const onNewPasswordKeyPress = () => {

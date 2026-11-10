@@ -1,38 +1,44 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import mongoose from "mongoose";
 
 import connectDB from "#utils/database/connect";
 import { Menus, type TMenu } from "#utils/database/models/menu";
 import { Orders, type TOrder, type TProduct } from "#utils/database/models/order";
-import { authOptions } from "#utils/helper/authHelper";
+import { requireCustomerSession } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
 
 export async function POST(req: Request) {
 	try {
-		const session = await getServerSession(authOptions);
+		const session = await requireCustomerSession();
 		const body = await req.json();
 
-		if (!session) throw { status: 401, message: "Authentication Required" };
-		if (!body?.products.length) throw { status: 400, message: "Can't place order on empty cart" };
+		if (!Array.isArray(body?.products) || body.products.length === 0) throw { status: 400, message: "Can't place order on empty cart" };
 
 		await connectDB();
 		const products: TProduct[] = await Promise.all(
-			body?.products?.map(async (product: TProduct & { _id: string }) => {
-				const menuItem = await Menus.findById<TMenu>(product?._id).lean();
+			body.products.map(async (product: unknown) => {
+				if (!product || typeof product !== "object") throw { status: 400, message: "Invalid product in order" };
+				const { _id, quantity } = product as { _id?: unknown; quantity?: unknown };
+				if (typeof _id !== "string" || !mongoose.isValidObjectId(_id)) throw { status: 400, message: "Invalid menu item id" };
+				if (typeof quantity !== "number" || !Number.isSafeInteger(quantity) || quantity <= 0) {
+					throw { status: 400, message: "Product quantity must be a positive whole number" };
+				}
+
+				const menuItem = await Menus.findOne<TMenu>({ _id, restaurantID: session.restaurant.username, hidden: false }).lean();
 
 				if (!menuItem) throw { status: 404, message: "Ordered product(s) not found." };
 				return {
-					product: product?._id,
-					quantity: product?.quantity,
+					product: menuItem._id,
+					quantity,
 					price: menuItem?.price,
 					tax: ((menuItem?.price * menuItem?.taxPercent) / 100).toFixed(2),
 				};
 			})
 		);
 
-		const restaurantID = session?.restaurant?.username;
-		const table = session?.restaurant?.table;
-		const customer = session?.customer?._id;
+		const restaurantID = session.restaurant.username;
+		const table = session.restaurant.table;
+		const customer = session.customer._id;
 		const order = await Orders.findOne<TOrder>({ restaurantID, customer, state: "active" });
 
 		if (order) {

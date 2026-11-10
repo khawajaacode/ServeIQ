@@ -6,6 +6,7 @@ import { Kitchens } from "#utils/database/models/kitchen";
 import { Menus } from "#utils/database/models/menu";
 import { Profiles } from "#utils/database/models/profile";
 import { Tables } from "#utils/database/models/table";
+import { requireAdminSession } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
 
 import empire from "../refreshDemoData/_data/empire/empire";
@@ -19,9 +20,7 @@ const deleteData = async (ids: string[]) => {
 		{ model: Tables, name: "Tables" },
 		{ model: Accounts, name: "Accounts", field: "username" },
 	];
-	return Promise.all(
-		models.map(async ({ model, name, field = "restaurantID" }) => ({ model: name, ...(await model.deleteMany({ [field]: { $in: ids } })) }))
-	);
+	return Promise.all(models.map(async ({ model, name, field = "restaurantID" }) => ({ model: name, ...(await model.deleteMany({ [field]: { $in: ids } })) })));
 };
 
 const createData = async (props: TDocumentData) => {
@@ -36,8 +35,9 @@ const createData = async (props: TDocumentData) => {
 	return { account: newAccount._id, profile: newProfile._id, menus: newMenus.length, kitchens: newKitchen.length, tables: newTables.length };
 };
 
-export async function GET() {
+export async function POST() {
 	try {
+		await requireAdminSession();
 		await connectDB();
 		const deleted = await deleteData(["empire", "starbucks"]);
 		const empireResult = await createData(empire);

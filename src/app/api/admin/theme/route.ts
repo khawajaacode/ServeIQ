@@ -1,19 +1,17 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { isValidThemeColor } from "xtreme-ui";
 
 import connectDB from "#utils/database/connect";
 import { Profiles, type TProfile } from "#utils/database/models/profile";
-import { authOptions } from "#utils/helper/authHelper";
+import { requireAdminSession } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
 
 export async function POST(req: Request) {
 	try {
 		await connectDB();
-		const session = await getServerSession(authOptions);
+		const session = await requireAdminSession();
 		const { themeColor } = await req.json();
 
-		if (!session) throw { status: 401, message: "Authentication Required" };
 		if (!isValidThemeColor(themeColor)) throw { status: 400, message: "Valid theme color is required" };
 
 		const profile = await Profiles.findOne<TProfile>({ restaurantID: session?.username });

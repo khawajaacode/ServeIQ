@@ -1,6 +1,6 @@
 "use client";
 
-import { Scanner } from "@yudiel/react-qr-scanner";
+import { type IScannerError, Scanner } from "@yudiel/react-qr-scanner";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Icon } from "xtreme-ui";
@@ -118,15 +118,30 @@ const ScannerClient = () => {
 		}
 	};
 
-	const handleError = (err: unknown) => {
-		const errorObj = err as Error;
-		if (errorObj?.name === "NotAllowedError" || errorObj?.name === "PermissionDeniedError") {
-			setHasPermission(false);
-			setError("Camera permission denied. Please allow access.");
-		} else if (errorObj?.name === "NotFoundError" || errorObj?.name === "DevicesNotFoundError") {
-			setError("No camera found on this device.");
-		} else {
-			console.warn("Scanner error:", errorObj);
+	const handleError = (errorObj: IScannerError) => {
+		console.warn("Scanner error:", errorObj);
+		switch (errorObj.kind) {
+			case "permission-denied":
+				setHasPermission(false);
+				setError("Camera permission denied. Please allow access.");
+				break;
+			case "no-camera":
+				setError("No camera found on this device.");
+				break;
+			case "in-use":
+				setError("Camera is already in use by another application.");
+				break;
+			case "insecure-context":
+				setError("Camera access requires a secure connection.");
+				break;
+			case "unsupported":
+				setError("Camera scanning is not supported by this browser.");
+				break;
+			case "overconstrained":
+				setError("The selected camera is unavailable. Try selecting another camera.");
+				break;
+			default:
+				setError("Unable to start the camera. Please try again.");
 		}
 	};
 
@@ -145,6 +160,8 @@ const ScannerClient = () => {
 						className="cameraSelect"
 						onChange={(e) => {
 							setDeviceId(e.target.value);
+							setError(null);
+							setHasPermission(null);
 						}}
 						value={deviceId || ""}
 					>
@@ -163,7 +180,7 @@ const ScannerClient = () => {
 					<div className="errorMessage">
 						<Icon className="errorIcon" code="f071" type="solid" />
 						<p>{error}</p>
-						{!hasPermission && <p className="hint">Check your browser settings.</p>}
+						{hasPermission === false && <p className="hint">Check your browser settings.</p>}
 					</div>
 				) : (
 					<Scanner
@@ -171,15 +188,15 @@ const ScannerClient = () => {
 							finder: false,
 						}}
 						constraints={{
-							deviceId: deviceId ? { exact: deviceId } : undefined,
 							advanced: [{ torch, zoom } as unknown as MediaTrackConstraintSet],
+							deviceId: deviceId ? { exact: deviceId } : undefined,
 						}}
 						key={`${deviceId}-${torch}`}
 						onError={handleError}
 						onScan={handleScan}
 						styles={{
-							container: { width: "100%", height: "100%", borderRadius: "20px" },
-							video: { objectFit: "cover", borderRadius: "20px" },
+							container: { borderRadius: "20px", height: "100%", width: "100%" },
+							video: { borderRadius: "20px", objectFit: "cover" },
 						}}
 					/>
 				)}
