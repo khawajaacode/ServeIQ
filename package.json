@@ -22,6 +22,7 @@
 	},
 	"version": "0.1.0",
 	"private": true,
+	"packageManager": "pnpm@10.12.4",
 	"dependencies": {
 		"@ai-sdk/openai-compatible": "^3.0.55",
 		"@react-pdf/renderer": "^4.9.0",
