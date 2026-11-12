@@ -4,7 +4,7 @@ import { Button, Icon } from "xtreme-ui";
 
 import Collapsible from "#components/layout/Collapsible";
 import NoContent from "#components/layout/NoContent";
-import type { TMenu } from "#utils/database/models/menu";
+import type { TMenuCustom } from "#utils/database/models/menu";
 import type { TOrder } from "#utils/database/models/order";
 
 import ItemCard from "../../../../components/layout/ItemCard";
@@ -144,4 +144,3 @@ export interface TOrderDetailProps {
 	reject: boolean;
 	setReject: (props: { _id: string | null; details: boolean }) => void;
 }
-type TMenuCustom = TMenu & { quantity: number };

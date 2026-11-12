@@ -4,6 +4,8 @@ import type { TCustomer } from "./customer";
 import type { TMenu } from "./menu";
 
 const orderState = ["active", "reject", "cancel", "complete"] as const;
+export const ORDER_ACTIONS = ["accept", "complete", "reject", "rejectOnActive"] as const;
+export type TOrderAction = (typeof ORDER_ACTIONS)[number];
 const OrderSchema = new mongoose.Schema<TOrder>(
 	{
 		restaurantID: { type: String, trim: true, lowercase: true, required: true },

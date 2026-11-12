@@ -1,6 +1,6 @@
 import { generateText } from "ai";
 import AIConfig from "#utils/database/models/aiConfig";
-import { configuredProviders, configs, models, type AIPlatform } from "./config";
+import { configuredProviders, configs, getModel, type AIPlatform } from "./config";
 
 const PROVIDER_ORDER = configuredProviders;
 
@@ -13,20 +13,20 @@ const getErrorDetails = (error: unknown) => {
 	};
 };
 
-export const getProviderState = async () => {
+const getProviderState = async () => {
 	let config = await AIConfig.findOne();
 	if (!config) config = await AIConfig.create({ exhaustedProviders: [] });
 	return config;
 };
 
-export const getAvailableProvider = async () => {
+const getAvailableProvider = async () => {
 	const config = await getProviderState();
 	const exhausted = new Set(config.exhaustedProviders);
 	return PROVIDER_ORDER.find((p) => !exhausted.has(p)) || null;
 };
 
-export const markProviderExhausted = async (provider: string) => await AIConfig.updateOne({}, { $addToSet: { exhaustedProviders: provider } }, { upsert: true });
-export const resetProviders = async () => await AIConfig.updateOne({}, { $set: { exhaustedProviders: [] } }, { upsert: true });
+const markProviderExhausted = async (provider: string) => await AIConfig.updateOne({}, { $addToSet: { exhaustedProviders: provider } }, { upsert: true });
+const resetProviders = async () => await AIConfig.updateOne({}, { $set: { exhaustedProviders: [] } }, { upsert: true });
 
 export const smartGenerateText = async (params: Omit<Parameters<typeof generateText>[0], "model">) => {
 	if (!PROVIDER_ORDER.length) throw Object.assign(new Error("No AI providers are configured"), { isProviderError: true });
@@ -45,7 +45,7 @@ export const smartGenerateText = async (params: Omit<Parameters<typeof generateT
 			console.log(`[AI] Trying provider: ${currentProvider}/${providerConfig?.model}`);
 			const result = await generateText({
 				...params,
-				model: models[currentProvider],
+				model: getModel(currentProvider),
 			} as Parameters<typeof generateText>[0]);
 			return result;
 		} catch (error) {

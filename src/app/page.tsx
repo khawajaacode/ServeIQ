@@ -8,6 +8,7 @@ import { getThemeColor } from "#utils/database/helper/getThemeColor";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "#utils/seo/constants";
 import { buildMetadata } from "#utils/seo/metadata";
 import PageContainer from "./_homepage/PageContainer";
+import "./home.scss";
 
 export const metadata = buildMetadata({
 	title: "ServeIQ",

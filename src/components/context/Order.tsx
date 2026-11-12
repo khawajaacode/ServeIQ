@@ -1,11 +1,9 @@
-import noop from "lodash/noop";
-import pick from "lodash/pick";
 import { useSession } from "next-auth/react";
 import { createContext, type ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
 
-import type { TMenu } from "#utils/database/models/menu";
+import type { TMenuCustom } from "#utils/database/models/menu";
 import type { TOrder } from "#utils/database/models/order";
 import { fetcher } from "#utils/helper/common";
 
@@ -17,7 +15,7 @@ const OrderDefault: TOrderInitialType = {
 	cancelOrder: async () => false,
 	cancelingOrder: false,
 	loginOpen: false,
-	setLoginOpen: noop,
+	setLoginOpen: () => undefined,
 };
 
 export const OrderContext = createContext(OrderDefault);
@@ -37,7 +35,7 @@ export const OrderProvider = ({ children }: TOrderProviderProps) => {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					products: products.map((product) => pick(product, ["_id", "quantity"])),
+					products: products.map(({ _id, quantity }) => ({ _id, quantity })),
 				}),
 			});
 			const res = await req.json().catch(() => null);
@@ -108,4 +106,3 @@ export interface TOrderInitialType {
 	placingOrder: boolean;
 	setLoginOpen: (open: boolean) => void;
 }
-type TMenuCustom = TMenu & { quantity: number };

@@ -1,8 +1,6 @@
 "use client";
 
-import { Document, Image, Page, StyleSheet, Text, usePDF, View } from "@react-pdf/renderer";
-import { useEffect, useState } from "react";
-import { Button, Spinner } from "xtreme-ui";
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 import type { TOrder } from "#utils/database/models/order";
 import type { TProfile } from "#utils/database/models/profile";
@@ -215,75 +213,3 @@ export const InvoiceDocument = ({ order, profile }: TInvoiceProps) => {
 		</Document>
 	);
 };
-
-const Invoice = ({ order, profile }: TInvoiceProps) => {
-	const [isClient, setIsClient] = useState(false);
-	const [instance, updateInstance] = usePDF({ document: <InvoiceDocument order={order} profile={profile} /> });
-
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
-
-	useEffect(() => {
-		updateInstance(<InvoiceDocument order={order} profile={profile} />);
-	}, [order, profile, updateInstance]);
-
-	if (!(isClient && order)) return null;
-
-	const handleDownload = () => {
-		if (instance.url) {
-			const link = document.createElement("a");
-			link.href = instance.url;
-			link.download = `Invoice-${order._id.toString().slice(-6).toUpperCase()}.pdf`;
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
-	};
-
-	const handlePrint = () => {
-		if (instance.url) {
-			const iframe = document.createElement("iframe");
-			iframe.style.display = "none";
-			iframe.src = instance.url;
-			document.body.appendChild(iframe);
-			iframe.contentWindow?.focus();
-			iframe.contentWindow?.print();
-		}
-	};
-
-	return (
-		<div style={{ position: "relative", width: "100%", height: "100%", minHeight: "500px", overflow: "hidden", borderRadius: "1rem" }}>
-			{!instance.loading && instance.url ? (
-				<iframe
-					height="100%"
-					src={`${instance.url}#toolbar=0&view=FitH&navpanes=0&scrollbar=0`}
-					style={{ border: "none", borderRadius: "1rem", backgroundColor: "white" }}
-					title="Invoice PDF"
-					width="100%"
-				/>
-			) : (
-				<Spinner fullpage label="Generating Invoice" />
-			)}
-
-			<div style={{ position: "absolute", bottom: 20, right: 20, display: "flex", flexDirection: "column", gap: "10px" }}>
-				<Button
-					disabled={instance.loading || !instance.url}
-					icon="f019"
-					onClick={handleDownload}
-					style={{ borderRadius: "50%", width: 50, height: 50, padding: 0, minWidth: 0 }}
-					type="primary"
-				/>
-				<Button
-					disabled={instance.loading || !instance.url}
-					icon="f02f"
-					onClick={handlePrint}
-					style={{ borderRadius: "50%", width: 50, height: 50, padding: 0, minWidth: 0 }}
-					type="secondary"
-				/>
-			</div>
-		</div>
-	);
-};
-
-export default Invoice;

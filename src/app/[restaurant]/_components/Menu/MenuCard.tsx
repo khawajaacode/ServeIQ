@@ -4,18 +4,13 @@ import { useInView } from "react-intersection-observer";
 import { Icon } from "xtreme-ui";
 
 import QuantityButton from "#components/base/QuantityButton";
-import type { TMenu } from "#utils/database/models/menu";
+import { VEG_ICON_CODE } from "#utils/constants/common";
+import type { TMenuCustom } from "#utils/database/models/menu";
 
 import "./menuCard.scss";
 
-const vegIcon = {
-	veg: "f4d8",
-	"non-veg": "f6d6",
-	"contains-egg": "f7fb",
-} as const;
-
 const MenuCard = (props: TMenuCardProps) => {
-	const { className, show, restrictOrder, showInfo, setShowInfo, item, quantity } = props;
+	const { className, restrictOrder, showInfo, setShowInfo, item, quantity } = props;
 	const [cardRef, inView] = useInView({ threshold: 0 });
 	const [isFlashing, setFlashing] = useState(false);
 	const flashTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -50,8 +45,6 @@ const MenuCard = (props: TMenuCardProps) => {
 		window.matchMedia("(hover: hover)").matches && "hoverSupported"
 	);
 
-	if (!show) return null;
-
 	return (
 		<div className={classList + (inView ? "" : "blank")} id={`menu-item-${item._id}`} ref={cardRef}>
 			{inView && (
@@ -64,7 +57,7 @@ const MenuCard = (props: TMenuCardProps) => {
 					)}
 					{item.veg && (
 						<div className={`vegIcon ${item.veg}`}>
-							<Icon className="icon" code={vegIcon[item.veg]} style={{ "--iconSize": "16px" }} type="solid" />
+							<Icon className="icon" code={VEG_ICON_CODE[item.veg]} style={{ "--iconSize": "16px" }} type="solid" />
 							<span className="label">{item.veg.replace(/-/g, " ")}</span>
 						</div>
 					)}
@@ -112,8 +105,6 @@ interface TMenuCardProps {
 	quantity: number;
 	restrictOrder?: boolean;
 	setShowInfo: (showInfo: boolean) => void;
-	show?: boolean;
 	showInfo?: boolean;
 }
 
-type TMenuCustom = TMenu & { quantity: number };

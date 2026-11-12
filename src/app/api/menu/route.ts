@@ -1,4 +1,3 @@
-import omit from "lodash/omit";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
@@ -21,11 +20,20 @@ export async function GET(req: Request) {
 		const account = await getRestaurantData(username);
 		if (!account) throw { status: 404, message: `Account with restaurant id: ${username} is not found` };
 
+		const { __v, _id, kitchens, password, profile, menus, tables, ...accountData } = account;
+		const { __v: profileVersion, _id: profileId, ...profileData } = profile ?? {};
+
 		return NextResponse.json({
-			...omit(account, ["__v", "_id", "kitchens", "password", "profile", "menus", "tables"]),
-			profile: omit(account?.profile, ["__v", "_id"]),
-			menus: account?.menus.filter((v: TMenu) => !v.hidden).map((v: TMenu) => omit(v, ["__v"])),
-			tables: account?.tables.map((v: TTable) => omit(v, ["__v", "_id"])),
+			...accountData,
+			profile: profileData,
+			menus: menus?.filter((v: TMenu) => !v.hidden).map((v: TMenu) => {
+				const { __v: menuVersion, ...menu } = v;
+				return menu;
+			}),
+			tables: tables?.map((v: TTable) => {
+				const { __v: tableVersion, _id: tableId, ...table } = v as TTable & { __v?: number; _id?: unknown };
+				return table;
+			}),
 		});
 	} catch (err) {
 		console.log(err);

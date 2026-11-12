@@ -6,7 +6,7 @@ import SearchButton from "#components/base/SearchButton";
 import SideSheet from "#components/base/SideSheet";
 import { useOrder, useRestaurant } from "#components/context/useContext";
 import Modal from "#components/layout/Modal";
-import type { TMenu } from "#utils/database/models/menu";
+import type { TMenuCustom } from "#utils/database/models/menu";
 import { useQueryParams } from "#utils/hooks/useQueryParams";
 
 import CartPage from "./CartPage";
@@ -110,6 +110,24 @@ const OrderPage = () => {
 		setSelectedProducts(selection);
 	};
 
+	const renderCards = (withImage: boolean) =>
+		filteredProducts
+			?.filter((item) => !item.hidden && Boolean(item.image) === withImage)
+			.map((item, key) => (
+				<MenuCard
+					decreaseQuantity={decreaseProductQuantity}
+					increaseQuantity={increaseProductQuantity}
+					item={item}
+					key={key}
+					quantity={
+						(selectedProducts.some((obj) => obj._id === item._id) && selectedProducts?.find((obj) => obj._id === item._id)?.quantity) || 0
+					}
+					restrictOrder={!eligibleToOrder}
+					setShowInfo={(v) => setShowInfoCard(v)}
+					showInfo={item._id.toString() === showInfoCard.toString()}
+				/>
+			));
+
 	useEffect(() => {
 		const search = searchParam.toLowerCase();
 
@@ -198,52 +216,13 @@ const OrderPage = () => {
 						</div>
 						{hasImageItems && (
 							<div className={`itemContainer ${eligibleToOrder ? "" : "restrictOrder"}`}>
-								<div>
-									{filteredProducts?.map(
-										(item, key) =>
-											!item.hidden && (
-												<MenuCard
-													decreaseQuantity={decreaseProductQuantity}
-													increaseQuantity={increaseProductQuantity}
-													item={item}
-													key={key}
-													quantity={
-														(selectedProducts.some((obj) => obj._id === item._id) &&
-															selectedProducts?.find((obj) => obj._id === item._id)?.quantity) ||
-														0
-													}
-													restrictOrder={!eligibleToOrder}
-													setShowInfo={(v) => setShowInfoCard(v)}
-													show={!!item.image}
-													showInfo={item._id.toString() === showInfoCard.toString()}
-												/>
-											)
-									)}
-								</div>
+								<div>{renderCards(true)}</div>
 							</div>
 						)}
 						{hasImageItems && hasNonImageItems && <hr />}
 						{hasNonImageItems && (
 							<div className={`itemContainer withoutImage ${eligibleToOrder ? "" : "restrictOrder"}`}>
-								<div>
-									{filteredProducts?.map((item, key) => (
-										<MenuCard
-											decreaseQuantity={decreaseProductQuantity}
-											increaseQuantity={increaseProductQuantity}
-											item={item}
-											key={key}
-											quantity={
-												(selectedProducts.some((obj) => obj._id === item._id) &&
-													selectedProducts?.find((obj) => obj._id === item._id)?.quantity) ||
-												0
-											}
-											restrictOrder={!eligibleToOrder}
-											setShowInfo={(v) => setShowInfoCard(v)}
-											show={!item.image}
-											showInfo={item._id.toString() === showInfoCard.toString()}
-										/>
-									))}
-								</div>
+								<div>{renderCards(false)}</div>
 							</div>
 						)}
 					</div>
@@ -272,4 +251,3 @@ const OrderPage = () => {
 
 export default OrderPage;
 
-type TMenuCustom = TMenu & { quantity: number };

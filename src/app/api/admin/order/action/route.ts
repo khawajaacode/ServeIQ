@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server";
 
 import connectDB from "#utils/database/connect";
-import { Orders, type TOrder } from "#utils/database/models/order";
+import { ORDER_ACTIONS, Orders, type TOrder } from "#utils/database/models/order";
 import { requireAdminSession } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
 
-const actions = ["accept", "reject", "rejectOnActive", "complete"];
 export async function POST(req: Request) {
 	try {
 		const session = await requireAdminSession();
 		const body = await req.json();
 
 		if (!body?.orderID) throw { status: 400, message: "Order id is required to perform an action" };
-		if (!actions.includes(body?.action)) throw { status: 400, message: "Invalid action provided" };
+		if (!ORDER_ACTIONS.includes(body?.action)) throw { status: 400, message: "Invalid action provided" };
 
 		await connectDB();
 

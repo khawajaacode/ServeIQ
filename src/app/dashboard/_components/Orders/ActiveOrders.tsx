@@ -4,7 +4,7 @@ import SideSheet from "#components/base/SideSheet";
 import { useAdmin } from "#components/context/useContext";
 import ItemCard from "#components/layout/ItemCard";
 import NoContent from "#components/layout/NoContent";
-import type { TMenu } from "#utils/database/models/menu";
+import type { TMenuCustom } from "#utils/database/models/menu";
 import type { TOrder } from "#utils/database/models/order";
 
 import OrderDetail from "./OrderDetail";
@@ -91,4 +91,3 @@ export interface TActiveOrdersProps {
 	onScroll: (event: UIEvent<HTMLDivElement>) => void;
 }
 
-type TMenuCustom = TMenu & { quantity: number };

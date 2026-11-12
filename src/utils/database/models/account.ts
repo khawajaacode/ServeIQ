@@ -28,6 +28,20 @@ AccountSchema.pre("save", async function () {
 });
 
 export const Accounts = mongoose.models?.accounts ?? mongoose.model<TAccount>("accounts", AccountSchema);
+
+// ponytail: process-lifetime account cache, stale if a restaurant's profile changes. Drop the Map and re-query on every save if category validation ever misfires.
+const accountCache = new Map<string, TAccount | null>();
+
+export const requireAccount = async (restaurantID: string) => {
+	let account = accountCache.get(restaurantID);
+	if (account === undefined) {
+		account = await Accounts.findOne<TAccount>({ username: restaurantID }).populate("profile");
+		accountCache.set(restaurantID, account);
+	}
+	if (!account) throw new Error(`The associated account with username '${restaurantID}' does not exist.`);
+	return account;
+};
+
 export type TAccount = HydratedDocument<{
 	username: string;
 	email: string;

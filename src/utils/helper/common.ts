@@ -21,13 +21,9 @@ export const createQueryString = (searchParams: ReadonlyURLSearchParams, query: 
 };
 
 export const splitStringByFirstWord = (sentence: string) => {
-	if (!sentence) {
-		return;
-	}
+	const trimmed = sentence?.trim();
+	if (!trimmed) return;
 
-	sentence = sentence.trim();
-	return [
-		sentence.replace(/ .*/, ""), // Get first word from sentence
-		sentence.replace(/\w+ /, ""), // Get remaining sentence except first word
-	];
+	const index = trimmed.indexOf(" ");
+	return index === -1 ? [trimmed] : [trimmed.slice(0, index), trimmed.slice(index + 1)];
 };

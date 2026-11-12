@@ -1,4 +1,3 @@
-import pick from "lodash/pick";
 import { NextResponse } from "next/server";
 
 import connectDB from "#utils/database/connect";
@@ -12,7 +11,8 @@ export async function GET(req: Request) {
 		const account = await Accounts.findOne<TAccount>({ email }).populate("profile");
 		if (!account) throw { status: 404, message: "Account not found" };
 
-		return NextResponse.json(pick(account?.profile, ["name", "address", "themeColor", "avatar"]));
+		const { name, address, themeColor, avatar } = account?.profile ?? {};
+		return NextResponse.json({ name, address, themeColor, avatar });
 	} catch (err) {
 		console.log(err);
 		return CatchNextResponse(err);

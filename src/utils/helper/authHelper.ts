@@ -1,4 +1,3 @@
-import pick from "lodash/pick";
 import { getServerSession } from "next-auth";
 import type { AuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -117,10 +116,15 @@ export const authOptions: AuthOptions = {
 		},
 		async jwt({ token, user, account }) {
 			if (account?.provider === "restaurant" && user) {
+				const { email, accountActive, subscriptionActive, username, verified } = user._doc;
 				token.user = {
 					role: user?.role,
 					themeColor: user?.themeColor,
-					...pick(user._doc, ["email", "accountActive", "subscriptionActive:", "username", "verified"]),
+					email,
+					accountActive,
+					subscriptionActive,
+					username,
+					verified,
 				};
 			}
 

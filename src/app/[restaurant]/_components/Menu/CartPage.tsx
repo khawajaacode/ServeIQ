@@ -8,7 +8,7 @@ import { useOrder } from "#components/context/useContext";
 import Collapsible from "#components/layout/Collapsible";
 import NoContent from "#components/layout/NoContent";
 import { getAnimSrc } from "#utils/constants/common";
-import type { TMenu } from "#utils/database/models/menu.js";
+import type { TMenuCustom } from "#utils/database/models/menu";
 
 import ItemCard from "../../../../components/layout/ItemCard";
 
@@ -175,4 +175,3 @@ interface TCartPageProps {
 	selectedProducts: TMenuCustom[];
 }
 
-type TMenuCustom = TMenu & { quantity: number };

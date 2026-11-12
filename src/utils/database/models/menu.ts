@@ -1,8 +1,6 @@
 import mongoose, { type HydratedDocument } from "mongoose";
 
-import { Accounts, type TAccount } from "./account";
-
-const accountCache = new Map<string, TAccount | null>();
+import { Accounts, requireAccount } from "./account";
 
 const FoodType = ["spicy", "extra-spicy", "sweet"] as const;
 const Veg = ["veg", "non-veg", "contains-egg"] as const;
@@ -13,7 +11,7 @@ const MenuSchema = new mongoose.Schema<TMenu>(
 		restaurantID: { type: String, trim: true, lowercase: true, required: true },
 		description: { type: String, trim: true },
 		category: { type: String, trim: true, lowercase: true },
-		price: { type: Number, trim: true, required: true },
+		price: { type: Number, required: true },
 		taxPercent: { type: Number, trim: true, required: true },
 		foodType: { type: String, trim: true, lowercase: true, enum: FoodType },
 		veg: { type: String, trim: true, lowercase: true, required: true, enum: Veg },
@@ -24,12 +22,7 @@ const MenuSchema = new mongoose.Schema<TMenu>(
 );
 
 MenuSchema.pre("save", async function () {
-	let account = accountCache.get(this.restaurantID);
-	if (!account) {
-		account = await Accounts.findOne<TAccount>({ username: this.restaurantID }).populate("profile");
-		if (account) accountCache.set(this.restaurantID, account);
-		else throw new Error(`The associated account with username '${this.restaurantID}'does not exist.`);
-	}
+	const account = await requireAccount(this.restaurantID);
 	if (!account?.profile?.categories?.includes(this.category)) throw new Error("The menu item category does not exist.");
 });
 MenuSchema.post("save", async function () {
@@ -52,3 +45,4 @@ export type TMenu = HydratedDocument<{
 
 export type TFoodType = (typeof FoodType)[number];
 export type TVeg = (typeof Veg)[number];
+export type TMenuCustom = TMenu & { quantity: number };

@@ -3,7 +3,7 @@ import { type UIEvent, useEffect, useState } from "react";
 import SideSheet from "#components/base/SideSheet";
 import { useAdmin } from "#components/context/useContext";
 import NoContent from "#components/layout/NoContent";
-import type { TMenu } from "#utils/database/models/menu";
+import type { TMenuCustom } from "#utils/database/models/menu";
 import type { TOrder } from "#utils/database/models/order";
 
 import ItemCard from "../../../../components/layout/ItemCard";
@@ -91,4 +91,3 @@ export default OrderRequests;
 export interface TOrderRequestsProps {
 	onScroll: (event: UIEvent<HTMLDivElement>) => void;
 }
-type TMenuCustom = TMenu & { quantity: number };

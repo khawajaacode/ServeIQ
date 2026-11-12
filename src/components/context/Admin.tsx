@@ -1,4 +1,3 @@
-import noop from "lodash/noop";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { createContext, type ReactNode, useEffect, useState } from "react";
@@ -6,7 +5,7 @@ import { toast } from "react-toastify";
 import useSWR from "swr";
 
 import type { TMenu } from "#utils/database/models/menu";
-import type { TOrder } from "#utils/database/models/order";
+import type { TOrder, TOrderAction } from "#utils/database/models/order";
 import type { TProfile } from "#utils/database/models/profile";
 import type { TTable } from "#utils/database/models/table";
 import { fetcher } from "#utils/helper/common";
@@ -16,11 +15,11 @@ const AdminDefault: TAdminInitialType = {
 	menus: [],
 	tables: [],
 	profileLoading: false,
-	profileMutate: () => new Promise(noop),
+	profileMutate: () => new Promise<void>(() => undefined),
 	orderRequest: [],
 	orderActive: [],
 	orderHistory: [],
-	orderAction: () => new Promise(noop),
+	orderAction: () => new Promise<void>(() => undefined),
 	orderActionLoading: false,
 	orderLoading: false,
 };
@@ -119,5 +118,3 @@ export interface TAdminInitialType {
 	profileMutate: () => Promise<void>;
 	tables: TTable[];
 }
-
-export type TOrderAction = "accept" | "complete" | "reject" | "rejectOnActive";

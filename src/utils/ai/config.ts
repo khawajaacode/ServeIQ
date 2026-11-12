@@ -28,13 +28,13 @@ export type AIPlatform = (typeof configs)[number]["platform"];
 
 export const configuredProviders = configs.filter(({ platform }) => Boolean(process.env[`AI_${platform.toUpperCase()}_KEY`])).map(({ platform }) => platform) as AIPlatform[];
 
-export const models = Object.fromEntries(
-	configs.map(({ platform, url, model }) => {
-		const provider = createOpenAICompatible({
-			baseURL: url,
-			apiKey: process.env[`AI_${platform.toUpperCase()}_KEY`],
-			name: platform,
-		});
-		return [platform, provider(model)];
-	})
-) as Record<AIPlatform, AIProvider>;
+export const getModel = (platform: AIPlatform): AIProvider => {
+	const config = configs.find((entry) => entry.platform === platform);
+	if (!config) throw new Error(`Unknown AI platform: ${platform}`);
+
+	return createOpenAICompatible({
+		baseURL: config.url,
+		apiKey: process.env[`AI_${platform.toUpperCase()}_KEY`],
+		name: platform,
+	})(config.model);
+};

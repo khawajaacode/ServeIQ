@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useInView } from "react-intersection-observer";
 
 import QuantityButton from "#components/base/QuantityButton";
-import type { TMenu } from "#utils/database/models/menu";
+import type { TMenuCustom } from "#utils/database/models/menu";
 
 import "./itemCard.scss";
 
@@ -61,4 +61,3 @@ interface TItemCardProps {
 	staticCard?: boolean;
 }
 
-type TMenuCustom = TMenu & { quantity: number };
