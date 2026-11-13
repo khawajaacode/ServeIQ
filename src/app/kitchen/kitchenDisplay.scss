@@ -26,6 +26,12 @@
 		color: var(--colorContentSecondary);
 	}
 
+	.headerActions {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
 	.tickets {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -59,7 +65,7 @@
 		list-style: none;
 	}
 
-	button {
+	.ticket button {
 		width: 100%;
 		padding: 11px 16px;
 		border: 0;
@@ -70,7 +76,7 @@
 		font: inherit;
 	}
 
-	button:disabled {
+	.ticket button:disabled {
 		cursor: wait;
 		opacity: 0.6;
 	}

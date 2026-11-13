@@ -1,4 +1,4 @@
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import "./userLogin.scss";
 const mobileNumberPattern = /^(\+92|0)?3\d{9}$/;
 const UserLogin = ({ setOpen }: UserLoginProps) => {
 	const pathname = usePathname();
+	const router = useRouter();
 	const params = useSearchParams();
 	const [page, setPage] = useState("phone");
 	const [buttonLabel, setButtonLabel] = useState("Next");
@@ -35,7 +36,7 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 				setPage("signOTP");
 			}, 400);
 		} else if (page === "signOTP" || page === "loginOTP") {
-			if (!params.get("table")) return toast.error("Please scan the QR Code");
+			if (!params.get("table")) return router.push("/scan");
 			if (!fname.trim() || !lname.trim()) return toast.error("Please enter your first and last name");
 
 			setBusy(true);

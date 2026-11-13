@@ -1,7 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "xtreme-ui";
 
 import "./kitchenDisplay.scss";
 
@@ -30,6 +32,8 @@ const elapsed = (createdAt: string, now: number) => {
 
 export default function KitchenDisplay() {
 	const session = useSession();
+	const router = useRouter();
+	const openDashboard = useCallback(() => router.push("/dashboard"), [router]);
 	const [orders, setOrders] = useState<KitchenOrder[]>([]);
 	const [now, setNow] = useState(Date.now());
 	const [loading, setLoading] = useState(true);
@@ -83,9 +87,12 @@ export default function KitchenDisplay() {
 		<main className="kitchenDisplay">
 			<header>
 				<h1>Kitchen</h1>
-				<p>
-					{orders.length} active {orders.length === 1 ? "ticket" : "tickets"}
-				</p>
+				<div className="headerActions">
+					<p>
+						{orders.length} active {orders.length === 1 ? "ticket" : "tickets"}
+					</p>
+					<Button icon="e09f" iconType="solid" label="Dashboard" onClick={openDashboard} />
+				</div>
 			</header>
 			{error ? <p className="error">{error}</p> : null}
 			{orders.length === 0 ? (

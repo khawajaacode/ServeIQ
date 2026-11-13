@@ -5,18 +5,16 @@ import { ActionCard, Button, Icon, Spinner } from "xtreme-ui";
 import SearchButton from "#components/base/SearchButton";
 import SideSheet from "#components/base/SideSheet";
 import { useOrder, useRestaurant } from "#components/context/useContext";
-import Modal from "#components/layout/Modal";
 import type { TMenuCustom } from "#utils/database/models/menu";
 import { useQueryParams } from "#utils/hooks/useQueryParams";
 
 import CartPage from "./CartPage";
 import MenuCard from "./MenuCard";
-import UserLogin from "./UserLogin";
 import "./orderPage.scss";
 
 const OrderPage = () => {
 	const session = useSession();
-	const { loading, loginOpen, setLoginOpen } = useOrder();
+	const { loading, setLoginOpen } = useOrder();
 	const { restaurant } = useRestaurant();
 
 	const menus = restaurant?.menus as TMenuCustom[];
@@ -242,9 +240,6 @@ const OrderPage = () => {
 					/>
 				)}
 			</SideSheet>
-			<Modal open={loginOpen} setOpen={setLoginOpen}>
-				<UserLogin setOpen={setLoginOpen} />
-			</Modal>
 		</div>
 	);
 };
