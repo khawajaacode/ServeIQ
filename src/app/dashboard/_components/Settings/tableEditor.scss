@@ -1,0 +1,130 @@
+.tableEditor {
+	box-sizing: border-box;
+	height: 100%;
+	overflow-y: auto;
+	padding: 42px clamp(20px, 5vw, 64px) 48px;
+	background: var(--colorBackgroundSecondary);
+	color: var(--colorContentPrimary);
+}
+
+.tableEditorHeader {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	gap: 20px;
+	margin: 0 auto 28px;
+	max-width: 1000px;
+}
+
+.tableEditor h1,
+.tableEditorModal h2 {
+	font-size: 34px;
+	font-variation-settings: "wdth" 75, "wght" 500;
+	margin: 0;
+}
+
+.tableEditor h1 span,
+.tableEditorModal h2 span {
+	font-variation-settings: "wdth" 75, "wght" 300;
+}
+
+.eyebrow {
+	color: var(--colorContentTertiary);
+	font-size: 13px;
+	letter-spacing: 0.12em;
+	margin: 0 0 8px;
+	text-transform: uppercase;
+}
+
+.tableGrid {
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	margin: 0 auto;
+	max-width: 1000px;
+}
+
+.tableCard {
+	align-items: center;
+	background: var(--colorBackgroundPrimary);
+	border-radius: 20px;
+	box-shadow: 0 10px 10px -10px rgb(0 0 0 / 10%);
+	display: flex;
+	gap: 16px;
+	min-height: 92px;
+	padding: 20px;
+}
+
+.tableIcon {
+	align-items: center;
+	background: hsl(var(--colorBrandPrimary));
+	border-radius: 14px;
+	color: var(--colorBackgroundPrimary);
+	display: flex;
+	flex: 0 0 48px;
+	height: 48px;
+	justify-content: center;
+}
+
+.tableDetails {
+	flex: 1;
+	min-width: 0;
+}
+
+.tableDetails h2 {
+	font-size: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tableDetails p,
+.tableEditorModal p {
+	color: var(--colorContentSecondary);
+	margin: 5px 0 0;
+}
+
+.tableActions {
+	display: flex;
+	gap: 6px;
+}
+
+.tableEditorModal {
+	min-width: min(440px, 78vw);
+	padding: 6px;
+}
+
+.tableEditorModal .tableField {
+	margin-top: 18px;
+	width: 100%;
+}
+
+.tableModalActions {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	margin-top: 24px;
+}
+
+@media (width <= 600px) {
+	.tableEditor {
+		padding: 28px 16px 36px;
+	}
+
+	.tableEditorHeader {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}
+
+@media (width <= 460px) {
+	.tableCard {
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.tableActions {
+		margin-left: 64px;
+		width: calc(100% - 64px);
+	}
+}

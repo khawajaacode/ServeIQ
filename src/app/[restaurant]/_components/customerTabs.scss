@@ -1,0 +1,219 @@
+.customerTab {
+	box-sizing: border-box;
+	height: 100%;
+	overflow-y: auto;
+	padding: 42px clamp(20px, 5vw, 64px) 48px;
+	background: var(--colorBackgroundSecondary);
+	color: var(--colorContentPrimary);
+	scrollbar-width: thin;
+}
+
+.customerTabHeader {
+	margin: 0 auto 24px;
+	max-width: 900px;
+}
+
+.customerTabHeader h1,
+.customerTab h2 {
+	font-size: 34px;
+	font-variation-settings: "wdth" 75, "wght" 500;
+	margin: 0;
+}
+
+.customerTabHeader h1 span,
+.customerTab h2 span {
+	font-variation-settings: "wdth" 75, "wght" 300;
+}
+
+.eyebrow {
+	color: var(--colorContentTertiary);
+	font-size: 13px;
+	letter-spacing: 0.12em;
+	margin: 0 0 8px;
+	text-transform: uppercase;
+}
+
+.identityCard,
+.reviewSummary,
+.reviewCard,
+.reviewForm,
+.contactCard {
+	background: var(--colorBackgroundPrimary);
+	border-radius: 20px;
+	box-shadow: 0 10px 10px -10px rgb(0 0 0 / 10%);
+	margin: 0 auto 24px;
+	max-width: 900px;
+	overflow: hidden;
+}
+
+.identityCover {
+	display: block;
+	height: clamp(150px, 28vw, 280px);
+	object-fit: cover;
+	width: 100%;
+}
+
+.identityBody,
+.contactCard,
+.reviewForm {
+	padding: 24px clamp(20px, 4vw, 32px);
+}
+
+.identityBody {
+	align-items: center;
+	display: flex;
+	gap: 20px;
+}
+
+.identityAvatar {
+	flex: 0 0 auto;
+}
+
+.identityBody p,
+.contactCard p,
+.reviewCard p {
+	color: var(--colorContentSecondary);
+	line-height: 1.7;
+	margin: 0;
+}
+
+.photoGallery {
+	margin: 32px auto 0;
+	max-width: 900px;
+}
+
+.photoGallery h2 {
+	font-size: 22px;
+	margin-bottom: 16px;
+}
+
+.photoGrid {
+	display: grid;
+	gap: 14px;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.photoItem img {
+	aspect-ratio: 1.3;
+	border-radius: 16px;
+	object-fit: cover;
+	width: 100%;
+}
+
+.photoItem {
+	aspect-ratio: 1.3;
+	border-radius: 16px;
+	overflow: hidden;
+	position: relative;
+}
+
+.reviewSummary {
+	align-items: center;
+	display: flex;
+	gap: 20px;
+	padding: 24px 30px;
+}
+
+.reviewSummary > strong {
+	font-size: 46px;
+	font-variation-settings: "wdth" 75, "wght" 500;
+}
+
+.reviewSummary p,
+.reviewMeta time {
+	color: var(--colorContentTertiary);
+	font-size: 13px;
+	margin: 4px 0 0;
+}
+
+.stars {
+	color: hsl(var(--colorBrandPrimary));
+	letter-spacing: 2px;
+}
+
+.reviewList {
+	display: grid;
+	gap: 14px;
+	margin: 0 auto 24px;
+	max-width: 900px;
+}
+
+.reviewCard {
+	display: flex;
+	gap: 16px;
+	padding: 20px;
+}
+
+.reviewAvatar {
+	align-items: center;
+	background: hsl(var(--colorBrandPrimary));
+	border-radius: 50%;
+	color: var(--colorBackgroundPrimary);
+	display: flex;
+	flex: 0 0 44px;
+	font-weight: 600;
+	height: 44px;
+	justify-content: center;
+}
+
+.reviewContent {
+	flex: 1;
+	min-width: 0;
+}
+
+.reviewMeta {
+	align-items: flex-start;
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.reviewMeta strong,
+.reviewMeta .stars {
+	display: block;
+}
+
+.reviewForm {
+	display: grid;
+	gap: 14px;
+}
+
+.reviewForm h2 {
+	font-size: 22px;
+}
+
+.reviewField {
+	width: 100%;
+}
+
+.contactCard h2 {
+	margin: 0 0 10px;
+}
+
+.customerTabLoading,
+.reviewLoading {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+}
+
+@media (width <= 600px) {
+	.customerTab {
+		padding: 28px 16px 36px;
+	}
+
+	.customerTabHeader h1 {
+		font-size: 30px;
+	}
+
+	.identityBody {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}
+
+@media (width <= 460px) {
+	.reviewMeta {
+		display: block;
+	}
+}

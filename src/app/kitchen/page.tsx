@@ -7,8 +7,7 @@ import KitchenDisplay from "./KitchenDisplay";
 
 const Kitchen = async () => {
 	const session = await getServerSession(authOptions);
-	// Kitchen-role accounts are future work; restaurant owners currently use admin.
-	if (!session || session.role !== "admin") redirect("/");
+	if (!session || (session.role !== "admin" && session.role !== "kitchen")) redirect("/");
 
 	return <KitchenDisplay />;
 };

@@ -52,7 +52,7 @@ export default function KitchenDisplay() {
 	}, []);
 
 	useEffect(() => {
-		if (session.data?.role !== "admin") return;
+		if (session.data?.role !== "admin" && session.data?.role !== "kitchen") return;
 		loadOrders();
 		const refresh = window.setInterval(loadOrders, 10_000);
 		const clock = window.setInterval(() => setNow(Date.now()), 10_000);
@@ -80,7 +80,8 @@ export default function KitchenDisplay() {
 	};
 
 	if (session.status === "loading") return <main className="kitchenDisplay">Loading kitchen...</main>;
-	if (session.status !== "authenticated" || session.data.role !== "admin") return <main className="kitchenDisplay">Admin login required.</main>;
+	if (session.status !== "authenticated" || (session.data.role !== "admin" && session.data.role !== "kitchen"))
+		return <main className="kitchenDisplay">Staff login required.</main>;
 	if (loading) return <main className="kitchenDisplay">Loading kitchen orders...</main>;
 
 	return (
@@ -111,11 +112,15 @@ export default function KitchenDisplay() {
 								<strong>{elapsed(order.createdAt, now)}</strong>
 							</div>
 							<ul>
-								{order.products.filter((product) => product.adminApproved).map((product, index) => (
-									<li key={`${order._id}-${index}`}>
-										<span>{product.quantity} × {product.name}</span>
-									</li>
-								))}
+								{order.products
+									.filter((product) => product.adminApproved)
+									.map((product, index) => (
+										<li key={`${order._id}-${index}`}>
+											<span>
+												{product.quantity} × {product.name}
+											</span>
+										</li>
+									))}
 							</ul>
 							<button disabled={busy === order._id} onClick={() => complete(order._id)} type="button">
 								{busy === order._id ? "Completing..." : "Complete"}

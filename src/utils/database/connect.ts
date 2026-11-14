@@ -6,6 +6,7 @@ import "./models/kitchen";
 import "./models/menu";
 import "./models/table";
 import "./models/order";
+import "./models/review";
 import "./models/aiConfig";
 
 if (!process.env.MONGODB_URI) {

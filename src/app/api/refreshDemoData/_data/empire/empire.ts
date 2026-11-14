@@ -14,7 +14,7 @@ const profile = {
 	_id: new mongoose.Types.ObjectId(`${REF_EMPIRE}${TYPE_PROFILE}${ID_SUFFIX}000001`),
 	name: "Lahore Food House",
 	restaurantID: "empire",
-	description: "Casual Dining - Pakistani, Biryani, Punjabi, Sindhi, Chinese, Arabian, Seafood",
+	description: "Empire Restaurant - Lahori BBQ, Karahi, Nihari, Biryani, Haleem, Chinese",
 	address: "Islamabad, Pakistan",
 	themeColor: { h: 347, s: 76, l: 19 },
 	avatar: "https://lh3.googleusercontent.com/6pc0PrmxaBRy3IQNzdtCWW86iCecUOM7GXJnEKIIi56mtJ5nl1OCo_ZwjyaxtTsDstg3l1GUkH_95158smqRIrwtDSPvP_iX9Upd7E9c",

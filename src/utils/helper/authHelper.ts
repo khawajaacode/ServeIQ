@@ -138,6 +138,7 @@ export const authOptions: AuthOptions = {
 
 type TAuthSession = Session;
 type TAdminSession = TAuthSession & { role: "admin"; username: string };
+export type TStaffSession = TAuthSession & { role: "admin" | "kitchen"; username: string };
 type TCustomerSession = TAuthSession & {
 	role: "customer";
 	restaurant: NonNullable<TAuthSession["restaurant"]> & { username: string; table: string };
@@ -153,6 +154,13 @@ export const requireAdminSession = async (): Promise<TAdminSession> => {
 	if (!session) throw { status: 401, message: "Authentication Required" };
 	if (!isAdminSession(session)) throw { status: 403, message: "Administrator access required" };
 	return session;
+};
+
+export const requireStaffSession = async (): Promise<TStaffSession> => {
+	const session = await getServerSession(authOptions);
+	if (!session) throw { status: 401, message: "Authentication Required" };
+	if (!session.username || (session.role !== "admin" && session.role !== "kitchen")) throw { status: 403, message: "Staff access required" };
+	return session as TStaffSession;
 };
 
 export const requireCustomerSession = async (): Promise<TCustomerSession> => {
