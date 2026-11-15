@@ -5,8 +5,7 @@ export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 export const CatchNextResponse = ({ message = "Something went wrong", status = 500 }: NextResponseError) => NextResponse.json({ message, status }, { status });
 
 export const scrollToSection = (section?: string) => {
-	const element = document.getElementById(section ? section : "homepage") as HTMLDivElement;
-	element.scrollIntoView({ behavior: "smooth" });
+	document.getElementById(section ?? "homepage")?.scrollIntoView({ behavior: "smooth" });
 };
 
 export const isEmailValid = (email?: string) => {
