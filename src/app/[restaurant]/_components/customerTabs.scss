@@ -174,12 +174,54 @@
 }
 
 .reviewForm {
+	align-items: center;
 	display: grid;
-	gap: 14px;
+	gap: 24px;
+	grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
+	padding: 20px clamp(20px, 4vw, 32px);
+}
+
+.reviewFormFields {
+	display: grid;
+	gap: 12px;
+	grid-template-areas:
+		"rating button"
+		"comment comment";
+	grid-template-columns: minmax(140px, 0.35fr) auto;
+}
+
+.reviewFormFields > :nth-child(1) {
+	grid-area: rating;
+}
+
+.reviewFormFields > :nth-child(2) {
+	grid-area: comment;
+}
+
+.reviewFormFields > :nth-child(3) {
+	grid-area: button;
+	justify-self: end;
+}
+
+.reviewForm .eyebrow {
+	margin-bottom: 6px;
 }
 
 .reviewForm h2 {
 	font-size: 22px;
+	margin: 0;
+}
+
+.reviewForm .reviewField {
+	min-width: 0;
+}
+
+.reviewForm .xtrTextfield.textarea .input {
+	height: 110px;
+	min-height: 110px;
+	margin: 0;
+	padding: 18px 22px;
+	resize: vertical;
 }
 
 .reviewField {
@@ -209,6 +251,24 @@
 	.identityBody {
 		align-items: flex-start;
 		flex-direction: column;
+	}
+
+	.reviewForm {
+		align-items: stretch;
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+
+	.reviewFormFields {
+		grid-template-areas:
+			"rating"
+			"comment"
+			"button";
+		grid-template-columns: 1fr;
+	}
+
+	.reviewFormFields > :nth-child(3) {
+		justify-self: stretch;
 	}
 }
 

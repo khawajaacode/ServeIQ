@@ -48,6 +48,24 @@ export default function ReviewsTab({ restaurant, reviews, loading, onReviewSaved
 				<p className="eyebrow">Guest voices</p>
 				<h1>Reviews</h1>
 			</div>
+			<form className="reviewForm" onSubmit={submitReview}>
+				<div>
+					<p className="eyebrow">Your turn</p>
+					<h2>Share your experience</h2>
+				</div>
+				<div className="reviewFormFields">
+					<Select
+						className="reviewField"
+						clearable={false}
+						onChange={handleRatingChange}
+						options={[1, 2, 3, 4, 5].map((value) => ({ label: `${value} stars`, value: String(value) }))}
+						placeholder="Rating"
+						value={rating}
+					/>
+					<Textfield className="reviewField" onChange={handleCommentChange} placeholder="Write a review" required textarea value={comment} />
+					<Button disabled={saving} label="Post review" loading={saving} type="submit" />
+				</div>
+			</form>
 			<div className="reviewSummary">
 				<strong>{average ? average.toFixed(1) : "—"}</strong>
 				<div>
@@ -85,18 +103,6 @@ export default function ReviewsTab({ restaurant, reviews, loading, onReviewSaved
 					})}
 				</div>
 			)}
-			<form className="reviewForm" onSubmit={submitReview}>
-				<h2>Share your experience</h2>
-				<Select
-					className="reviewField"
-					onChange={handleRatingChange}
-					options={[1, 2, 3, 4, 5].map((value) => ({ label: `${value} stars`, value: String(value) }))}
-					placeholder="Rating"
-					value={rating}
-				/>
-				<Textfield className="reviewField" onChange={handleCommentChange} placeholder="Write a review" required textarea value={comment} />
-				<Button disabled={saving} label="Post review" loading={saving} type="submit" />
-			</form>
 		</section>
 	);
 }
