@@ -187,7 +187,7 @@
 	grid-template-areas:
 		"rating button"
 		"comment comment";
-	grid-template-columns: minmax(140px, 0.35fr) auto;
+	grid-template-columns: minmax(180px, 0.35fr) auto;
 }
 
 .reviewFormFields > :nth-child(1) {
@@ -201,6 +201,61 @@
 .reviewFormFields > :nth-child(3) {
 	grid-area: button;
 	justify-self: end;
+}
+
+.ratingField {
+	border: 0;
+	display: grid;
+	gap: 6px;
+	margin: 0;
+	min-width: 0;
+	padding: 0;
+}
+
+.ratingLabel {
+	color: var(--colorContentSecondary);
+	font-size: 13px;
+	padding: 0;
+}
+
+.starRating {
+	display: flex;
+	gap: 2px;
+}
+
+.starRating label {
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 30px;
+	line-height: 1;
+	position: relative;
+}
+
+.starRating input {
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+}
+
+.starRating span {
+	color: var(--colorContentTertiary);
+	transition:
+		color 150ms ease,
+		transform 150ms ease;
+}
+
+.starRating label.active span {
+	color: hsl(var(--colorBrandPrimary));
+}
+
+.starRating label:hover span {
+	transform: scale(1.12);
+}
+
+.starRating input:focus-visible + span {
+	border-radius: 6px;
+	outline: 2px solid hsl(var(--colorBrandPrimary));
+	outline-offset: 2px;
 }
 
 .reviewForm .eyebrow {

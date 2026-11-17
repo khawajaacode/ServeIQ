@@ -2,7 +2,7 @@
 
 import type { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
-import { Button, Select, Textfield } from "xtreme-ui";
+import { Button, Textfield } from "xtreme-ui";
 
 import NoContent from "#components/layout/NoContent";
 
@@ -17,19 +17,19 @@ export interface CustomerReview {
 }
 
 export default function ReviewsTab({ restaurant, reviews, loading, onReviewSaved }: ReviewsTabProps) {
-	const [rating, setRating] = useState("5");
+	const [rating, setRating] = useState(5);
 	const [comment, setComment] = useState("");
 	const [saving, setSaving] = useState(false);
 	const average = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
-	const handleRatingChange = (value?: string) => setRating(value ?? "5");
 	const handleCommentChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setComment(event.target.value);
+	const onRatingChange = (event: ChangeEvent<HTMLInputElement>) => setRating(Number(event.target.value));
 
 	const submitReview = async (event: FormEvent) => {
 		event.preventDefault();
 		setSaving(true);
 		try {
 			const response = await fetch(`/api/${restaurant}/reviews`, {
-				body: JSON.stringify({ comment, rating: Number(rating) }),
+				body: JSON.stringify({ comment, rating }),
 				headers: { "Content-Type": "application/json" },
 				method: "POST",
 			});
@@ -54,14 +54,24 @@ export default function ReviewsTab({ restaurant, reviews, loading, onReviewSaved
 					<h2>Share your experience</h2>
 				</div>
 				<div className="reviewFormFields">
-					<Select
-						className="reviewField"
-						clearable={false}
-						onChange={handleRatingChange}
-						options={[1, 2, 3, 4, 5].map((value) => ({ label: `${value} stars`, value: String(value) }))}
-						placeholder="Rating"
-						value={rating}
-					/>
+					<fieldset className="ratingField">
+						<legend className="ratingLabel">Your rating</legend>
+						<div className="starRating">
+							{[1, 2, 3, 4, 5].map((value) => (
+								<label className={value <= rating ? "active" : ""} key={value}>
+									<input
+										aria-label={`${value} star${value === 1 ? "" : "s"}`}
+										checked={rating === value}
+										name="rating"
+										onChange={onRatingChange}
+										type="radio"
+										value={value}
+									/>
+									<span aria-hidden="true">★</span>
+								</label>
+							))}
+						</div>
+					</fieldset>
 					<Textfield className="reviewField" onChange={handleCommentChange} placeholder="Write a review" required textarea value={comment} />
 					<Button disabled={saving} label="Post review" loading={saving} type="submit" />
 				</div>
