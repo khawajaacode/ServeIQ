@@ -136,6 +136,11 @@
 	gap: 14px;
 	margin: 0 auto 24px;
 	max-width: 900px;
+
+	.reviewCard {
+		margin: 0;
+		max-width: none;
+	}
 }
 
 .reviewCard {
