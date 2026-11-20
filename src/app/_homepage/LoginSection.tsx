@@ -52,7 +52,7 @@ const LoginSection = () => {
 					setPassword("");
 					setPasswordShake(true);
 					setTimeout(() => setPasswordShake(false), 600);
-				}
+				} else router.push(kitchenUsername ? "/kitchen" : "/dashboard");
 				return;
 			}
 
