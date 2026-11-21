@@ -7,10 +7,6 @@ import { useQueryParams } from "#utils/hooks/useQueryParams";
 import "./navTopBar.scss";
 
 const subNavItems = {
-	home: [
-		{ label: "overview", route: "overview" },
-		{ label: "bills", route: "bills" },
-	],
 	orders: [
 		{ label: "requests", route: "requests" },
 		{ label: "active", route: "active" },

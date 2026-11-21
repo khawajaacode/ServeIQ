@@ -3,14 +3,13 @@ import type { ChatMessage } from "../../types/chat";
 import { createMessage, sendChatMessage } from "../ai/chat";
 
 interface UseChatProps {
-	initialMessages?: ChatMessage[];
 	isAuthenticated: boolean;
 	restaurantId: string;
 }
 
-export const useChat = ({ restaurantId, isAuthenticated, initialMessages = [] }: UseChatProps) => {
+export const useChat = ({ restaurantId, isAuthenticated }: UseChatProps) => {
 	const [isOpen, setIsOpen] = useState(false);
-	const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const chatRef = useRef<HTMLDivElement>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);

@@ -12,7 +12,7 @@ import "./menuEditor.scss";
 
 const MenuEditor = () => {
 	const { profile, menus, profileLoading, profileMutate } = useAdmin();
-	const [modalState, setModalState] = useState("");
+	const [modal, setModal] = useState<"new" | "edit" | null>(null);
 	const [editItem, setEditItem] = useState<TMenu>();
 	const [hideSettingsLoading, setHideSettingsLoading] = useState<string[]>([]);
 	const [category, setCategory] = useState(0);
@@ -61,23 +61,22 @@ const MenuEditor = () => {
 	};
 	const onEdit = (item: TMenu) => {
 		setEditItem(item);
-		setModalState("menuItemEditState");
+		setModal("edit");
 	};
 
 	if (profileLoading) return <Spinner fullpage label="Loading Menu..." />;
 
 	return (
 		<div className="menuEditor">
-			{modalState === "newState" && (
-				<MenuEditorModal categories={profile?.categories ?? []} item={undefined} onClose={() => setModalState("")} onSaved={profileMutate} />
+			{modal === "new" && (
+				<MenuEditorModal categories={profile?.categories ?? []} item={undefined} onClose={() => setModal(null)} onSaved={profileMutate} />
 			)}
-			{modalState === "menuItemEditState" && (
-				<MenuEditorModal categories={profile?.categories ?? []} item={editItem} onClose={() => setModalState("")} onSaved={profileMutate} />
+			{modal === "edit" && (
+				<MenuEditorModal categories={profile?.categories ?? []} item={editItem} onClose={() => setModal(null)} onSaved={profileMutate} />
 			)}
 			<div className="menuCategoryEditor">
 				<div className="menuCategoryHeader">
 					<h1 className="menuCategoryHeading">Menu Categories</h1>
-					<div className="menuCategoryOptions" />
 				</div>
 				<div className="menuCategoryContainer" onScroll={onCategoryScroll} ref={categories}>
 					{profile?.categories?.map((item, i) => (
@@ -97,7 +96,6 @@ const MenuEditor = () => {
 			<div className="menuItemEditor">
 				<div className="menuItemHeader">
 					<h1 className="menuItemHeading">Menu Items</h1>
-					<div className="menuItemOptions" />
 				</div>
 				<div className="menuItemContainer">
 					{menus
@@ -113,7 +111,7 @@ const MenuEditor = () => {
 						))}
 				</div>
 			</div>
-			<Button className={`menuEditorAdd ${modalState ? "active" : ""}`} icon="2b" iconType="solid" onClick={() => setModalState("newState")} />
+			<Button className={`menuEditorAdd ${modal ? "active" : ""}`} icon="2b" iconType="solid" onClick={() => setModal("new")} />
 		</div>
 	);
 };

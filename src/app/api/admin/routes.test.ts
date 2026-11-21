@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const requireAdminSession = vi.fn();
 const requireStaffSession = vi.fn();
-const tableFind = vi.fn();
 const tableSave = vi.fn();
 const Tables = vi.fn().mockImplementation(() => ({ save: tableSave }));
 const orderFind = vi.fn();
@@ -25,16 +24,8 @@ describe("admin table and kitchen route scoping", () => {
 		vi.clearAllMocks();
 		requireAdminSession.mockResolvedValue({ role: "admin", username: "restaurant-a" });
 		requireStaffSession.mockResolvedValue({ role: "kitchen", username: "restaurant-a" });
-		tableFind.mockReturnValue({ sort: () => ({ lean: async () => [] }) });
 		tableSave.mockResolvedValue({ name: "Table 1", username: "one", restaurantID: "restaurant-a" });
 		orderFind.mockReturnValue({ populate: () => ({ populate: () => ({ lean: async () => [] }) }) });
-	});
-
-	it("requires an admin session for table reads", async () => {
-		const { GET } = await import("./table/route");
-		requireAdminSession.mockRejectedValue({ status: 401, message: "Authentication Required" });
-		const response = await GET();
-		expect(response.status).toBe(401);
 	});
 
 	it("scopes table creation to the authenticated restaurant", async () => {

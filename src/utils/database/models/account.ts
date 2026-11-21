@@ -12,9 +12,6 @@ const AccountSchema = new mongoose.Schema<TAccount>(
 		username: { type: String, trim: true, lowercase: true, unique: true, required: true, sparse: true, index: { unique: true } },
 		email: { type: String, trim: true, lowercase: true, unique: true, required: true, sparse: true, index: { unique: true } },
 		password: { type: String, required: true },
-		verified: { type: Boolean, default: false },
-		accountActive: { type: Boolean, default: true },
-		subscriptionActive: { type: Boolean, default: true },
 		profile: { type: mongoose.Schema.Types.ObjectId, ref: "profiles", unique: true },
 		kitchens: [{ type: mongoose.Schema.Types.ObjectId, ref: "kitchens", unique: true }],
 		tables: [{ type: mongoose.Schema.Types.ObjectId, ref: "tables", unique: true }],
@@ -46,9 +43,6 @@ export type TAccount = HydratedDocument<{
 	username: string;
 	email: string;
 	password: string;
-	verified: boolean;
-	accountActive: boolean;
-	subscriptionActive: boolean;
 	profile: TProfile;
 	kitchens: TKitchen[];
 	tables: TTable[];

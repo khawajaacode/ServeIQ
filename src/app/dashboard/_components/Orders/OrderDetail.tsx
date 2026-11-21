@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Button, Icon } from "xtreme-ui";
 
 import Collapsible from "#components/layout/Collapsible";
@@ -15,54 +15,23 @@ const OrderDetail = (props: TOrderDetailProps) => {
 	const { data, actions, busy, reject, setReject, action } = props;
 	const queryParams = useSearchParams();
 	const subTab = queryParams.get("subTab") ?? "";
+	const isActive = subTab === "active";
 
 	const [showApprovedItems, setShowApprovedItems] = useState(false);
 
-	const { approvedItems, requestedItems } = useMemo(
-		() => ({
-			approvedItems: data.products.filter(({ adminApproved }) => adminApproved),
-			requestedItems: data.products.filter(({ adminApproved }) => !adminApproved),
-		}),
-		[data.products]
-	);
+	const approvedItems = data.products.filter(({ adminApproved }) => adminApproved);
+	const requestedItems = data.products.filter(({ adminApproved }) => !adminApproved);
 
 	const OptionButtons = () => {
 		if (!actions) return null;
 
-		if (subTab === "active") {
-			return (
-				<div className="options">
-					<Button
-						className="reject"
-						icon="f00d"
-						iconType="solid"
-						label={reject ? "No Don't" : "Cancel"}
-						onClick={() => {
-							setReject({
-								_id: reject ? null : data._id.toString(),
-								details: true,
-							});
-						}}
-						type="primaryDanger"
-					/>
-					<Button
-						className="accept"
-						icon="f00c"
-						iconType="solid"
-						label={reject ? "Yes do it!" : "Complete"}
-						loading={busy}
-						onClick={() => action(data._id.toString())}
-					/>
-				</div>
-			);
-		}
 		return (
-			<div className={`options ${busy ? "busy" : ""}`}>
+			<div className={`options ${!isActive && busy ? "busy" : ""}`}>
 				<Button
 					className="reject"
 					icon="f00d"
 					iconType="solid"
-					label={reject ? "No Don't" : "Reject"}
+					label={reject ? "No Don't" : isActive ? "Cancel" : "Reject"}
 					onClick={() => {
 						setReject({
 							_id: reject ? null : data._id.toString(),
@@ -75,7 +44,7 @@ const OrderDetail = (props: TOrderDetailProps) => {
 					className="accept"
 					icon="f00c"
 					iconType="solid"
-					label={reject ? "Yes do it!" : "Accept"}
+					label={reject ? "Yes do it!" : isActive ? "Complete" : "Accept"}
 					loading={busy}
 					onClick={() => action(data._id.toString())}
 				/>

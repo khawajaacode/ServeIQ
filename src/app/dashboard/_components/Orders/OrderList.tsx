@@ -10,44 +10,44 @@ import type { TOrder } from "#utils/database/models/order";
 import OrderDetail from "./OrderDetail";
 import OrdersCard from "./OrdersCard";
 
-const ActiveOrders = (props: TActiveOrdersProps) => {
-	const { onScroll } = props;
-	const { orderActive = [], orderAction, orderActionLoading } = useAdmin();
+const OrderList = ({ mode, onScroll }: TOrderListProps) => {
+	const { orderActive = [], orderRequest = [], orderAction, orderActionLoading } = useAdmin();
+	const orders = mode === "active" ? orderActive : orderRequest;
 	const [activeCardID, setActiveCardID] = useState<string>();
 	const [activeCardData, setActiveCardData] = useState<TOrder>();
 	const [rejectCard, setRejectCard] = useState<{ _id: string | null; details: boolean }>({ _id: null, details: false });
 	const [sideSheetOpen, setSideSheetOpen] = useState(false);
 
 	const onOrderAction = async (orderID: string) => {
-		if (orderID === rejectCard._id) return await orderAction(orderID, "rejectOnActive");
+		if (orderID === rejectCard._id) return await orderAction(orderID, mode === "active" ? "rejectOnActive" : "reject");
 
-		return await orderAction(orderID, "complete");
+		return await orderAction(orderID, mode === "active" ? "complete" : "accept");
 	};
 
 	useEffect(() => {
-		if (orderActive?.length === 0) {
+		if (orders.length === 0) {
 			setActiveCardID(undefined);
 			setActiveCardData(undefined);
-		} else if (!orderActive.some(({ _id }) => _id.toString() === activeCardID)) {
-			setActiveCardID(orderActive[0]?._id.toString());
-			setActiveCardData(orderActive[0]);
+		} else if (!orders.some(({ _id }) => _id.toString() === activeCardID)) {
+			setActiveCardID(orders[0]?._id.toString());
+			setActiveCardData(orders[0]);
 		}
-	}, [activeCardID, orderActive]);
+	}, [activeCardID, orders]);
 
 	return (
 		<div className="orders">
-			{orderActive?.length === 0 ? (
-				<NoContent animationName="GhostNoContent" label="No active orders" />
+			{orders.length === 0 ? (
+				<NoContent animationName="GhostNoContent" label={mode === "active" ? "No active orders" : "No order requests"} />
 			) : (
 				<div className="ordersContent">
 					<div className={`list ${orderActionLoading ? "disable" : ""}`} onScroll={onScroll}>
-						{orderActive.map((data, i) => (
+						{orders.map((data, i) => (
 							<OrdersCard
 								action={onOrderAction}
 								actions
 								activate={(orderID: string) => {
 									setActiveCardID(orderID);
-									setActiveCardData(orderActive.find((order) => order._id.toString() === orderID));
+									setActiveCardData(orders.find((order) => order._id.toString() === orderID));
 								}}
 								active={activeCardID === data._id.toString()}
 								busy={orderActionLoading}
@@ -71,7 +71,11 @@ const ActiveOrders = (props: TActiveOrdersProps) => {
 								setReject={setRejectCard}
 							/>
 						) : (
-							<NoContent animationName="GhostNoContent" label="No approved orders from this table yet!" size={200} />
+							<NoContent
+								animationName="GhostNoContent"
+								label={mode === "active" ? "No approved orders from this table yet!" : "Nothing to show"}
+								size={200}
+							/>
 						)}
 					</div>
 				</div>
@@ -85,9 +89,9 @@ const ActiveOrders = (props: TActiveOrdersProps) => {
 	);
 };
 
-export default ActiveOrders;
+export default OrderList;
 
-export interface TActiveOrdersProps {
+export interface TOrderListProps {
+	mode: "active" | "requests";
 	onScroll: (event: UIEvent<HTMLDivElement>) => void;
 }
-

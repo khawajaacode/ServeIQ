@@ -1,51 +1,26 @@
 "use client";
 
-import { usePDF } from "@react-pdf/renderer";
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import { Button } from "xtreme-ui";
 
-import { InvoiceDocument, type TInvoiceProps } from "#components/layout/Invoice";
+import type { TOrder } from "#utils/database/models/order";
+import type { TProfile } from "#utils/database/models/profile";
 
 import "./orderDetails.scss";
 
-const OrderDetails = ({ order, profile }: TInvoiceProps) => {
-	const [isClient, setIsClient] = useState(false);
-	const [instance, updateInstance] = usePDF({ document: <InvoiceDocument order={order} profile={profile} /> });
-
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
-
-	useEffect(() => {
-		updateInstance(<InvoiceDocument order={order} profile={profile} />);
-	}, [order, profile, updateInstance]);
-
-	const handleDownload = () => {
-		if (instance.url) {
-			const link = document.createElement("a");
-			link.href = instance.url;
-			link.download = `Invoice-${order._id.toString().slice(-6).toUpperCase()}.pdf`;
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
-	};
+const OrderDetails = ({ order, profile }: TOrderDetailsProps) => {
+	const root = useRef<HTMLDivElement>(null);
 
 	const handlePrint = () => {
-		if (instance.url) {
-			const iframe = document.createElement("iframe");
-			iframe.style.display = "none";
-			iframe.src = instance.url;
-			document.body.appendChild(iframe);
-			iframe.contentWindow?.focus();
-			iframe.contentWindow?.print();
-		}
+		const node = root.current;
+		if (!node) return;
+		node.classList.add("printTarget");
+		window.print();
+		node.classList.remove("printTarget");
 	};
 
-	if (!isClient) return null;
-
 	return (
-		<div className="orderDetailsPreview">
+		<div className="orderDetailsPreview" ref={root}>
 			<div className="header">
 				<div className="title">
 					<h2>Order Details</h2>
@@ -54,13 +29,22 @@ const OrderDetails = ({ order, profile }: TInvoiceProps) => {
 					</div>
 				</div>
 				<div className="actions">
-					<Button className="actionBtn" disabled={instance.loading || !instance.url} icon="f019" onClick={handleDownload} type="primary" />
-					<Button className="actionBtn" disabled={instance.loading || !instance.url} icon="f02f" onClick={handlePrint} type="secondary" />
+					<Button className="actionBtn" icon="f02f" onClick={handlePrint} type="secondary" />
 				</div>
 			</div>
 
 			<div className="contentScroll">
 				<div className="section customerInfo">
+					<div className="infoBlock">
+						<span className="label">Restaurant</span>
+						<span>{profile?.name ?? "—"}</span>
+					</div>
+					{profile?.address && (
+						<div className="infoBlock">
+							<span className="label">Address</span>
+							<span>{profile.address}</span>
+						</div>
+					)}
 					<div className="infoBlock">
 						<span className="label">Date</span>
 						<span>{new Date(order.createdAt || Date.now()).toLocaleDateString()}</span>
@@ -125,3 +109,8 @@ const OrderDetails = ({ order, profile }: TInvoiceProps) => {
 };
 
 export default OrderDetails;
+
+interface TOrderDetailsProps {
+	order: TOrder & { _id: string; createdAt: string | Date };
+	profile?: TProfile;
+}

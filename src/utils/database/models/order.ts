@@ -21,7 +21,6 @@ const OrderSchema = new mongoose.Schema<TOrder>(
 				price: { type: Number, required: true },
 				tax: { type: Number, required: true },
 				adminApproved: { type: Boolean, default: false },
-				fulfilled: { type: Boolean, default: false },
 			},
 		],
 	},
@@ -54,6 +53,5 @@ export type TProduct = TMenu & {
 	quantity: number;
 	price: number;
 	tax: number;
-	fulfilled: boolean;
 	adminApproved: boolean;
 };

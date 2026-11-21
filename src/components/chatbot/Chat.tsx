@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Icon, Textfield } from "xtreme-ui";
 import { useChat } from "../../utils/hooks/useChat";
-import { useResize } from "../../utils/hooks/useResize";
 import { useOrder, useRestaurant } from "../context/useContext";
 import { ChatFab } from "./ChatFab";
 import { Welcome } from "./Welcome";
@@ -23,15 +22,6 @@ export const ChatInterface = () => {
 		isAuthenticated,
 	});
 
-	const { dimensions, handleResizeStart } = useResize({
-		initialWidth: 500,
-		initialHeight: 700,
-		minWidth: 350,
-		minHeight: 450,
-		maxWidth: 640,
-		maxHeight: 950,
-	});
-
 	const [input, setInput] = useState("");
 
 	const handleLoginRedirect = () => {
@@ -42,14 +32,7 @@ export const ChatInterface = () => {
 	return (
 		<>
 			{!loading && <ChatFab isAuthenticated={isAuthenticated} isOpen={isOpen} resetChat={resetChat} toggleOpen={toggleOpen} />}
-			<div
-				className={`chatWidget ${isOpen ? "open" : ""}`}
-				ref={chatRef}
-				style={{
-					width: isAuthenticated ? `${dimensions.width}px` : "fit-content",
-					height: isAuthenticated ? `${dimensions.height}px` : "fit-content",
-				}}
-			>
+			<div className={`chatWidget ${isOpen ? "open" : ""} ${isAuthenticated ? "authenticated" : ""}`} ref={chatRef}>
 				{isAuthenticated ? (
 					<>
 						<div className="chatHeader">
@@ -59,7 +42,7 @@ export const ChatInterface = () => {
 								</div>
 							</div>
 						</div>
-						<MessageList bottomRef={messagesEndRef} isLoading={isLoading} messages={messages} onResizeStart={handleResizeStart} />
+						<MessageList bottomRef={messagesEndRef} isLoading={isLoading} messages={messages} />
 						<Textfield
 							className="chatInput"
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}

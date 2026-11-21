@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import { useInView } from "react-intersection-observer";
 
 import QuantityButton from "#components/base/QuantityButton";
 import type { TMenuCustom } from "#utils/database/models/menu";
+import { useInView } from "#utils/hooks/useInView";
 
 import "./itemCard.scss";
 

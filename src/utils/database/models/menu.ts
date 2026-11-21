@@ -2,7 +2,6 @@ import mongoose, { type HydratedDocument } from "mongoose";
 
 import { Accounts, requireAccount } from "./account";
 
-const FoodType = ["spicy", "extra-spicy", "sweet"] as const;
 const Veg = ["veg", "non-veg", "contains-egg"] as const;
 
 const MenuSchema = new mongoose.Schema<TMenu>(
@@ -13,7 +12,6 @@ const MenuSchema = new mongoose.Schema<TMenu>(
 		category: { type: String, trim: true, lowercase: true },
 		price: { type: Number, required: true },
 		taxPercent: { type: Number, trim: true, required: true },
-		foodType: { type: String, trim: true, lowercase: true, enum: FoodType },
 		veg: { type: String, trim: true, lowercase: true, required: true, enum: Veg },
 		image: { type: String, trim: true },
 		hidden: { type: Boolean, default: true },
@@ -37,12 +35,10 @@ export type TMenu = HydratedDocument<{
 	category: string;
 	price: number;
 	taxPercent: number;
-	foodType: TFoodType;
 	veg: TVeg;
 	image: string;
 	hidden: boolean;
 }>;
 
-export type TFoodType = (typeof FoodType)[number];
 export type TVeg = (typeof Veg)[number];
 export type TMenuCustom = TMenu & { quantity: number };

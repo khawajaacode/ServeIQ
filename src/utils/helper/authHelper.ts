@@ -116,15 +116,12 @@ export const authOptions: AuthOptions = {
 		},
 		async jwt({ token, user, account }) {
 			if (account?.provider === "restaurant" && user) {
-				const { email, accountActive, subscriptionActive, username, verified } = user._doc;
+				const { email, username } = user._doc;
 				token.user = {
 					role: user?.role,
 					themeColor: user?.themeColor,
 					email,
-					accountActive,
-					subscriptionActive,
 					username,
-					verified,
 				};
 			}
 

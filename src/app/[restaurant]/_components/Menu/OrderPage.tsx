@@ -28,7 +28,7 @@ const OrderPage = () => {
 	const categories = useRef<HTMLDivElement>(null);
 	const [sideSheetOpen, setSideSheetOpen] = useState(false);
 	const [topHeading, setTopHeading] = useState(["Menu", "Category"]);
-	const [orderHeading, setOrderHeading] = useState(["Explore", "Menu"]);
+	const orderHeading = session.data?.role === "customer" ? ["Choose", "Order"] : ["Explore", "Menu"];
 	const sideSheetHeading = ["Your", "Order"];
 
 	const [searchActive, setSearchActive] = useState(false);
@@ -40,8 +40,8 @@ const OrderPage = () => {
 
 	const [filteredProducts, setFilteredProducts] = useState<TMenuCustom[]>(menus);
 	const [selectedProducts, setSelectedProducts] = useState<TMenuCustom[]>([]);
-	const [hasImageItems, setHasImageItems] = useState(false);
-	const [hasNonImageItems, setHasNonImageItems] = useState(false);
+	const hasImageItems = filteredProducts?.some((product) => !!product.image) ?? false;
+	const hasNonImageItems = filteredProducts?.some((product) => !product.image) ?? false;
 
 	const showOrderButton = restaurant?.tables?.some(({ username }) => username === table);
 	const eligibleToOrder = session.data?.role === "customer" && showOrderButton;
@@ -72,10 +72,7 @@ const OrderPage = () => {
 		if (categories.current) categories.current.scrollLeft += 400;
 	};
 	const onCategoryClick = (categoryName: string) => {
-		let newCategory = [];
-		if (category.includes(categoryName)) newCategory = category.filter((item) => item !== categoryName);
-		else newCategory = [...category, categoryName];
-
+		const newCategory = category.includes(categoryName) ? category.filter((item) => item !== categoryName) : [...category, categoryName];
 		params.set({ category: newCategory.join(",") });
 	};
 	const onLoginClick = () => {
@@ -146,16 +143,6 @@ const OrderPage = () => {
 		params.set({ search: searchValue });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchValue, params.set]);
-
-	useEffect(() => {
-		setHasImageItems(filteredProducts?.some((product) => !!product.image) ?? false);
-		setHasNonImageItems(filteredProducts?.some((product) => !product.image) ?? false);
-	}, [filteredProducts]);
-
-	useEffect(() => {
-		if (session.data?.role === "customer") setOrderHeading(["Choose", "Order"]);
-		else setOrderHeading(["Explore", "Menu"]);
-	}, [session]);
 
 	useEffect(() => {
 		if (session.status === "authenticated" && session.data?.role === "customer" && session.data.restaurant?.username !== restaurant?.username) signOut();

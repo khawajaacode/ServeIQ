@@ -9,12 +9,6 @@ import type { TMenu } from "#utils/database/models/menu";
 
 import "./menuEditorModal.scss";
 
-const foodTypeOptions = [
-	{ label: "Spicy", value: "spicy" },
-	{ label: "Extra Spicy", value: "extra-spicy" },
-	{ label: "Sweet", value: "sweet" },
-];
-
 const vegOptions = [
 	{ label: "Veg", value: "veg" },
 	{ label: "Non-Veg", value: "non-veg" },
@@ -31,7 +25,6 @@ const MenuEditorModal = (props: TMenuEditorModalProps) => {
 	const [category, setCategory] = useState<string>(item?.category ?? "");
 	const [price, setPrice] = useState(item?.price !== undefined ? String(item.price) : "");
 	const [taxPercent, setTaxPercent] = useState(item?.taxPercent !== undefined ? String(item.taxPercent) : "");
-	const [foodType, setFoodType] = useState<string>(item?.foodType ?? "");
 	const [veg, setVeg] = useState<string>(item?.veg ?? "");
 	const [image, setImage] = useState(item?.image ?? "");
 
@@ -50,7 +43,6 @@ const MenuEditorModal = (props: TMenuEditorModalProps) => {
 				body: JSON.stringify({
 					category,
 					description,
-					foodType: foodType || undefined,
 					image,
 					itemId: item?._id?.toString(),
 					name: name.trim(),
@@ -128,14 +120,6 @@ const MenuEditorModal = (props: TMenuEditorModalProps) => {
 								options={vegOptions}
 								placeholder="Veg / Non-Veg"
 								value={veg}
-							/>
-							<Select
-								className="field"
-								clearable
-								onChange={(value?: string) => setFoodType(value ?? "")}
-								options={foodTypeOptions}
-								placeholder="Food taste (optional)"
-								value={foodType}
 							/>
 						</div>
 						<Textfield

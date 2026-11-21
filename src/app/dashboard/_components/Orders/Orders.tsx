@@ -4,9 +4,8 @@ import { Spinner } from "xtreme-ui";
 
 import { useAdmin } from "#components/context/useContext";
 
-import ActiveOrders from "./ActiveOrders";
 import OrderHistory from "./OrderHistory";
-import OrderRequests from "./OrderRequests";
+import OrderList from "./OrderList";
 import "./orders.scss";
 
 const Orders = (props: TOrdersProps) => {
@@ -18,11 +17,11 @@ const Orders = (props: TOrdersProps) => {
 	if (orderLoading) return <Spinner fullpage label="Fetching orders..." />;
 
 	if (subTab === "requests") {
-		return <OrderRequests onScroll={onScroll} />;
+		return <OrderList mode="requests" onScroll={onScroll} />;
 	}
 
 	if (subTab === "active") {
-		return <ActiveOrders onScroll={onScroll} />;
+		return <OrderList mode="active" onScroll={onScroll} />;
 	}
 
 	if (subTab === "history") {

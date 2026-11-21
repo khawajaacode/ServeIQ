@@ -9,12 +9,10 @@ interface MessageListProps {
 	bottomRef: RefObject<HTMLDivElement | null>;
 	isLoading: boolean;
 	messages: ChatMessage[];
-	onResizeStart: (e: React.MouseEvent) => void;
 }
 
-export const MessageList = memo(({ messages, isLoading, bottomRef, onResizeStart }: MessageListProps) => (
+export const MessageList = memo(({ messages, isLoading, bottomRef }: MessageListProps) => (
 	<div className="chatMessagesContainer">
-		<span className="chatResizeHandle" onMouseDown={onResizeStart} />
 		<div className="chatMessages">
 			{messages.map((message) => (
 				<div className={`chatMessage ${message.role}`} key={message.id}>

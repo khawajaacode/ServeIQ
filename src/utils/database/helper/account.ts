@@ -3,7 +3,7 @@ import { Accounts, type TAccount } from "#utils/database/models/account";
 
 export async function getRestaurantData(username: string) {
 	await connectDB();
-	return await Accounts.findOne<TAccount>({ username }).populate("profile").populate("tables").populate("menus").lean();
+	return await Accounts.findOne<TAccount>({ username }).populate("profile").populate("tables").populate("menus").select("-__v").lean();
 }
 
 export async function findAccountByUsername(username: string) {

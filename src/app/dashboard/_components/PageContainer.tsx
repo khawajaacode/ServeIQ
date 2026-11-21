@@ -34,14 +34,7 @@ export default function PageContainer() {
 			<div className="dashboardContent">
 				{
 					{
-						// home: (
-						// 	<Home tab={subTab} onScroll={onScroll}
-						// 		showScrollbar={showScrollbar} setShowScrollbar={setShowScrollbar}
-						// 	/>
-						// ),
-
 						orders: <Orders onScroll={onScroll} />,
-
 						settings: <Settings onScroll={onScroll} />,
 					}[tab]
 				}

@@ -269,3 +269,41 @@
 		}
 	}
 }
+
+@media print {
+	body * {
+		visibility: hidden;
+	}
+
+	.orderDetailsPreview.printTarget,
+	.orderDetailsPreview.printTarget * {
+		visibility: visible;
+	}
+
+	.orderDetailsPreview.printTarget {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: auto;
+		border-radius: 0;
+		box-shadow: none;
+		animation: none;
+	}
+
+	.orderDetailsPreview.printTarget .section {
+		opacity: 1;
+		animation: none;
+	}
+
+	.orderDetailsPreview.printTarget .header {
+		box-shadow: none;
+	}
+
+	.orderDetailsPreview.printTarget .header .actions {
+		display: none;
+	}
+
+	.orderDetailsPreview.printTarget .contentScroll {
+		overflow: visible;
+	}
+}

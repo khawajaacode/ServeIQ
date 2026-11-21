@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { Lottie } from "xtreme-ui";
 
 import { getAnimSrc } from "#utils/constants/common";
@@ -10,31 +8,23 @@ import "./featureSection.scss";
 
 const getHSL = (hue: number, light: number) => `hsl(${hue}, 70%, ${light}%)`;
 
-const FeatureList = ({ items }: { items: string[] }) => {
-	const [hues, setHues] = useState<number[]>([]);
-
-	useEffect(() => {
-		const baseHues = new Array(items.length).fill(0).map((_, i) => i * (360 / items.length));
-		const shuffled = [...baseHues].sort(() => Math.random() - 0.5);
-		setHues(shuffled);
-	}, [items]);
-
-	if (hues.length === 0) return null;
-
-	return items.map((item, i) => (
-		<div
-			className="featureListItem"
-			key={i}
-			style={{
-				["--lightFeatureColor" as string]: getHSL(hues[i], 80),
-				["--darkFeatureColor" as string]: getHSL(hues[i], 40),
-			}}
-		>
-			<span className="featureLetter">{item.charAt(0)}</span>
-			<p>{item}</p>
-		</div>
-	));
-};
+const FeatureList = ({ items }: { items: string[] }) =>
+	items.map((item, i) => {
+		const hue = i * (360 / items.length);
+		return (
+			<div
+				className="featureListItem"
+				key={i}
+				style={{
+					["--lightFeatureColor" as string]: getHSL(hue, 80),
+					["--darkFeatureColor" as string]: getHSL(hue, 40),
+				}}
+			>
+				<span className="featureLetter">{item.charAt(0)}</span>
+				<p>{item}</p>
+			</div>
+		);
+	});
 
 const FeatureSection = () => (
 	<section className="featureSection" id="homepage-features">

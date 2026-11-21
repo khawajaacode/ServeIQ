@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
@@ -8,35 +7,16 @@ import { Spinner, themeController } from "xtreme-ui";
 import { DEFAULT_THEME_COLOR } from "#utils/constants/common";
 
 export default function Logout() {
-	const router = useRouter();
 	const session = useSession();
 
 	useEffect(() => {
-		if (session?.status === "authenticated") {
-			localStorage.setItem(
-				"logoutData",
-				JSON.stringify({
-					role: session?.data?.role,
-					restaurant: session?.data?.restaurant?.username,
-					table: session?.data?.restaurant?.table,
-				})
-			);
+		if (session.status !== "authenticated") return;
 
-			signOut();
-		} else if (session?.status === "unauthenticated") {
-			try {
-				const { role, restaurant, table } = JSON.parse(localStorage.getItem("logoutData") ?? "");
-				localStorage.removeItem("logoutData");
-
-				if (role === "admin" || role === "kitchen") router.push("/");
-				else if (role === "customer") router.push(`/${restaurant}?table=${table}`);
-				else router.push("/");
-			} catch (err) {
-				console.log(err);
-				router.push("/");
-			}
-		}
-	}, [router, session]);
+		const role = session.data?.role;
+		const restaurant = session.data?.restaurant;
+		const callbackUrl = role === "customer" && restaurant?.username ? `/${restaurant.username}?table=${restaurant.table}` : "/";
+		signOut({ callbackUrl });
+	}, [session]);
 
 	return (
 		<>

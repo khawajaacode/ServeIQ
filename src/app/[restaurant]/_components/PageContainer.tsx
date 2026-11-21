@@ -3,7 +3,7 @@
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { useOrder } from "#components/context/useContext";
+import { useOrder, useRestaurant } from "#components/context/useContext";
 import Modal from "#components/layout/Modal";
 
 import ContactTab from "./ContactTab";
@@ -18,18 +18,13 @@ export default function PageContainer() {
 	const { restaurant } = useParams<{ restaurant: string }>();
 	const tab = searchParams.get("tab");
 	const { loginOpen, setLoginOpen } = useOrder();
-	const [profile, setProfile] = useState<CustomerProfile>();
+	const { restaurant: account, loading: profileLoading } = useRestaurant();
+	const profile = account?.profile as CustomerProfile | undefined;
 	const [reviews, setReviews] = useState<CustomerReview[]>([]);
-	const [profileLoading, setProfileLoading] = useState(true);
 	const [reviewsLoading, setReviewsLoading] = useState(true);
 
 	useEffect(() => {
-		setProfileLoading(true);
 		setReviewsLoading(true);
-		fetch(`/api/menu?id=${restaurant}`)
-			.then((response) => response.json())
-			.then((data) => setProfile(data.profile))
-			.finally(() => setProfileLoading(false));
 		fetch(`/api/${restaurant}/reviews`)
 			.then((response) => response.json())
 			.then(setReviews)

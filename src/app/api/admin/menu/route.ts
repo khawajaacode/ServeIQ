@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
 		const { username } = session;
 
-		const { itemId, name, description, category, price, taxPercent, foodType, veg, image, hidden } = body;
+		const { itemId, name, description, category, price, taxPercent, veg, image, hidden } = body;
 
 		if (!name) throw { status: 400, message: "Menu item name is required" };
 		if (!category) throw { status: 400, message: "Menu item category is required" };
@@ -30,7 +30,6 @@ export async function POST(req: Request) {
 			category: String(category).trim().toLowerCase(),
 			price: Number(price),
 			taxPercent: Number(taxPercent),
-			foodType: foodType ? String(foodType) : undefined,
 			veg: String(veg),
 			image: String(image ?? "").trim(),
 			hidden: Boolean(hidden ?? false),

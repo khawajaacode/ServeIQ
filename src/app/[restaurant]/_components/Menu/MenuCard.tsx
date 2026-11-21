@@ -1,11 +1,11 @@
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
 import { Icon } from "xtreme-ui";
 
 import QuantityButton from "#components/base/QuantityButton";
 import { VEG_ICON_CODE } from "#utils/constants/common";
 import type { TMenuCustom } from "#utils/database/models/menu";
+import { useInView } from "#utils/hooks/useInView";
 
 import "./menuCard.scss";
 

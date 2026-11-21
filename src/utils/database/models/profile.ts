@@ -14,7 +14,6 @@ const ProfileSchema = new mongoose.Schema<TProfile>(
 			s: { type: Number, trim: true, min: 0, max: 100 },
 			l: { type: Number, trim: true, min: 0, max: 100 },
 		},
-		gstInclusive: { type: Boolean, default: false },
 		categories: [{ type: String, trim: true, lowercase: true, match: /^[^,]*$/ }],
 		avatar: { type: String, trim: true },
 		cover: { type: String, trim: true },
@@ -42,6 +41,5 @@ export type TProfile = HydratedDocument<{
 	cover: string;
 	photos: string[];
 	themeColor: TThemeColor;
-	gstInclusive: boolean;
 	categories: string[];
 }>;

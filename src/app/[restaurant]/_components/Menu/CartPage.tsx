@@ -20,8 +20,8 @@ const CartPage = (props: TCartPageProps) => {
 	const params = useSearchParams();
 	const table = params.get("table");
 	const { order, placeOrder, placingOrder, cancelOrder, cancelingOrder } = useOrder();
-	const [showOrderHistory, setShowOrderHistory] = useState(false);
-	const [selectionTotal, setSelectionTotal] = useState(0);
+	const selectionTotal = selectedProducts.reduce((total, product) => total + product.quantity * product.price, 0);
+	const showOrderHistory = selectedProducts.length === 0;
 	const [bottomBarActive, setBottomBarActive] = useState(false);
 	const [showTaxSummary, setShowTaxSummary] = useState(false);
 
@@ -38,13 +38,6 @@ const CartPage = (props: TCartPageProps) => {
 	const onCancelOrder = async () => {
 		if (await cancelOrder()) resetSelectedProducts();
 	};
-
-	useEffect(() => {
-		if (selectedProducts.length) setShowOrderHistory(false);
-		else setShowOrderHistory(true);
-
-		setSelectionTotal(selectedProducts.reduce((total, product) => total + product.quantity * product.price, 0));
-	}, [selectedProducts]);
 
 	useEffect(() => {
 		const cancelAndSignout = async () => {
@@ -88,7 +81,7 @@ const CartPage = (props: TCartPageProps) => {
 						expand={showOrderHistory}
 						label="Order History"
 						round
-						setExpand={setShowOrderHistory}
+						setExpand={() => {}}
 					>
 						{order?.products.map((product, key) => (
 							<ItemCard item={product as unknown as TMenuCustom} key={key} staticCard />

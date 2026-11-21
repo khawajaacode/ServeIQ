@@ -1,7 +1,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import type { ChangeEvent } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Textfield } from "xtreme-ui";
 
@@ -12,16 +12,16 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 	const pathname = usePathname();
 	const router = useRouter();
 	const params = useSearchParams();
-	const [page, setPage] = useState("phone");
-	const [buttonLabel, setButtonLabel] = useState("Next");
+	const [page, setPage] = useState<"phone" | "signOTP">("phone");
 	const [busy, setBusy] = useState(false);
 
-	const [dialCode] = useState("92");
+	const dialCode = "92";
 	const [phone, setPhone] = useState("");
 
 	const [fname, setFName] = useState("");
 	const [lname, setLName] = useState("");
-	const [heading, setHeading] = useState(["Let's", " start ordering"]);
+	const heading = page === "phone" ? ["Let's", " start ordering"] : ["Glad to", " see you here"];
+	const buttonLabel = page === "phone" ? "Next" : "Order";
 
 	const phoneNumber = phone.startsWith("+") || phone.startsWith("0") ? phone : `+${dialCode}${phone}`;
 	const onNext = async () => {
@@ -30,12 +30,8 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 				return toast.error("Please enter a valid phone number");
 			}
 
-			setBusy(true);
-			setTimeout(() => {
-				setBusy(false);
-				setPage("signOTP");
-			}, 400);
-		} else if (page === "signOTP" || page === "loginOTP") {
+			setPage("signOTP");
+		} else {
 			if (!params.get("table")) return router.push("/scan");
 			if (!fname.trim() || !lname.trim()) return toast.error("Please enter your first and last name");
 
@@ -63,19 +59,6 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 			}
 		}
 	};
-
-	useEffect(() => {
-		if (page === "phone") {
-			setHeading(["Let's", " start ordering"]);
-			setButtonLabel("Next");
-		} else if (page === "signOTP") {
-			setHeading(["Glad to", " see you here"]);
-			setButtonLabel("Order");
-		} else if (page === "loginOTP") {
-			setHeading(["Welcome", " back User"]);
-			setButtonLabel("Log In");
-		}
-	}, [page]);
 
 	return (
 		<div className={`userLogin ${page}`}>
@@ -116,13 +99,6 @@ const UserLogin = ({ setOpen }: UserLoginProps) => {
 						placeholder="Last Name"
 						value={lname}
 					/>
-					{/* <Textfield
-						className='otp'
-						placeholder='Enter Your otp'
-						autoComplete='one-time-code'
-						value={otp}
-						onChange={(e) => setOtp(e.target.value)}
-					/> */}
 				</div>
 			</div>
 			<div className="footer">
