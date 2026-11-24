@@ -22,7 +22,7 @@ const getActiveOrders = async () => {
 	if (!response.ok) throw new Error("Unable to load kitchen orders");
 
 	const orders = (await response.json()) as KitchenOrder[];
-	return orders.filter((order) => order.state === "active" && order.products.some((product) => product.adminApproved));
+	return orders.filter((order) => ["active", "preparing", "ready"].includes(order.state) && order.products.some((product) => product.adminApproved));
 };
 
 const elapsed = (createdAt: string, now: number) => {
@@ -39,6 +39,7 @@ export default function KitchenDisplay() {
 	const [loading, setLoading] = useState(true);
 	const [busy, setBusy] = useState<string>();
 	const [error, setError] = useState("");
+	const [lowStock, setLowStock] = useState<string[]>([]);
 
 	const loadOrders = useCallback(async () => {
 		try {
@@ -54,19 +55,35 @@ export default function KitchenDisplay() {
 	useEffect(() => {
 		if (session.data?.role !== "admin" && session.data?.role !== "kitchen") return;
 		loadOrders();
-		const refresh = window.setInterval(loadOrders, 10_000);
+		const events = new EventSource("/api/events");
+		const refresh = window.setInterval(loadOrders, 30_000);
+		events.addEventListener("order.created", loadOrders);
+		events.addEventListener("order.accepted", loadOrders);
+		events.addEventListener("order.preparing", loadOrders);
+		events.addEventListener("order.ready", loadOrders);
+		events.addEventListener("order.completed", loadOrders);
+		events.addEventListener("inventory.low", (event) => {
+			const data = JSON.parse((event as MessageEvent).data) as { name?: string; stock?: number; unit?: string };
+			setLowStock((items) => [...new Set([...items, `${data.name ?? "Ingredient"} (${data.stock ?? 0} ${data.unit ?? ""})`])]);
+		});
+		events.onerror = () => undefined;
 		const clock = window.setInterval(() => setNow(Date.now()), 10_000);
 		return () => {
+			events.close();
 			window.clearInterval(refresh);
 			window.clearInterval(clock);
 		};
 	}, [loadOrders, session.data?.role]);
 
 	const complete = async (orderID: string) => {
+		await updateState(orderID, "complete");
+	};
+
+	const updateState = async (orderID: string, action: "preparing" | "ready" | "complete") => {
 		setBusy(orderID);
 		try {
 			const response = await fetch("/api/admin/order/action", {
-				body: JSON.stringify({ action: "complete", orderID }),
+				body: JSON.stringify({ action, orderID }),
 				headers: { "Content-Type": "application/json" },
 				method: "POST",
 			});
@@ -96,6 +113,7 @@ export default function KitchenDisplay() {
 				</div>
 			</header>
 			{error ? <p className="error">{error}</p> : null}
+			{lowStock.length ? <p className="error">Low stock: {lowStock.join(", ")}</p> : null}
 			{orders.length === 0 ? (
 				<p className="empty">No active orders.</p>
 			) : (
@@ -109,7 +127,7 @@ export default function KitchenDisplay() {
 										{order.customer?.fname} {order.customer?.lname}
 									</p>
 								</div>
-								<strong>{elapsed(order.createdAt, now)}</strong>
+								<strong>{order.state === "active" ? elapsed(order.createdAt, now) : order.state}</strong>
 							</div>
 							<ul>
 								{order.products
@@ -122,9 +140,23 @@ export default function KitchenDisplay() {
 										</li>
 									))}
 							</ul>
-							<button disabled={busy === order._id} onClick={() => complete(order._id)} type="button">
-								{busy === order._id ? "Completing..." : "Complete"}
-							</button>
+							<div className="ticketActions">
+								{order.state === "active" && (
+									<button disabled={busy === order._id} onClick={() => updateState(order._id, "preparing")} type="button">
+										Preparing
+									</button>
+								)}
+								{order.state === "preparing" && (
+									<button disabled={busy === order._id} onClick={() => updateState(order._id, "ready")} type="button">
+										Ready
+									</button>
+								)}
+								{order.state === "ready" && (
+									<button disabled={busy === order._id} onClick={() => complete(order._id)} type="button">
+										{busy === order._id ? "Completing..." : "Complete"}
+									</button>
+								)}
+							</div>
 						</article>
 					))}
 				</div>

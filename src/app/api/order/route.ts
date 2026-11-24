@@ -15,7 +15,7 @@ export async function GET() {
 
 		const restaurantID = session.restaurant.username;
 		const customer = session.customer._id;
-		const order = (await Orders.findOne({ restaurantID, customer, state: "active" })
+		const order = (await Orders.findOne({ restaurantID, customer, state: { $in: ["active", "preparing", "ready"] } })
 			.populate<{ customer: TCustomer }>("customer")
 			.populate<{ products: { product: TMenu }[] }>("products.product")
 			.lean()) as unknown as TOrder | null;

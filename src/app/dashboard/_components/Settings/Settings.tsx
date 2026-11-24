@@ -1,6 +1,6 @@
 import { useSearchParams } from "next/navigation.js";
 import type { UIEvent } from "react";
-
+import InventoryEditor from "./InventoryEditor";
 import MenuEditor from "./MenuEditor/MenuEditor";
 import SettingsAccount from "./SettingsAccount";
 import TableEditor from "./TableEditor";
@@ -16,6 +16,7 @@ const Settings = (props: TSettingsProps) => {
 			{
 				{
 					account: <SettingsAccount />,
+					inventory: <InventoryEditor />,
 
 					menu: <MenuEditor />,
 

@@ -3,26 +3,27 @@ import mongoose, { type HydratedDocument } from "mongoose";
 import type { TCustomer } from "./customer";
 import type { TMenu } from "./menu";
 
-const orderState = ["active", "reject", "cancel", "complete"] as const;
-export const ORDER_ACTIONS = ["accept", "complete", "reject", "rejectOnActive"] as const;
+const orderState = ["active", "preparing", "ready", "reject", "cancel", "complete"] as const;
+export const ORDER_ACTIONS = ["accept", "preparing", "ready", "complete", "reject", "rejectOnActive"] as const;
 export type TOrderAction = (typeof ORDER_ACTIONS)[number];
 const OrderSchema = new mongoose.Schema<TOrder>(
 	{
-		restaurantID: { type: String, trim: true, lowercase: true, required: true },
-		table: { type: String, trim: true, lowercase: true, required: true },
-		customer: { type: mongoose.Schema.Types.ObjectId, ref: "customers" },
-		state: { type: String, trim: true, lowercase: true, enum: orderState, default: "active" },
+		customer: { ref: "customers", type: mongoose.Schema.Types.ObjectId },
 		orderTotal: { type: Number },
-		taxTotal: { type: Number },
 		products: [
 			{
-				product: { type: mongoose.Schema.Types.ObjectId, ref: "menus" },
-				quantity: { type: Number, default: 1 },
-				price: { type: Number, required: true },
-				tax: { type: Number, required: true },
-				adminApproved: { type: Boolean, default: false },
+				adminApproved: { default: false, type: Boolean },
+				price: { required: true, type: Number },
+				product: { ref: "menus", type: mongoose.Schema.Types.ObjectId },
+				quantity: { default: 1, type: Number },
+				tax: { required: true, type: Number },
 			},
 		],
+		restaurantID: { lowercase: true, required: true, trim: true, type: String },
+		state: { default: "active", enum: orderState, lowercase: true, trim: true, type: String },
+		stockReserved: { default: false, type: Boolean },
+		table: { lowercase: true, required: true, trim: true, type: String },
+		taxTotal: { type: Number },
 	},
 	{ timestamps: true }
 );
@@ -42,6 +43,7 @@ export type TOrder = HydratedDocument<{
 	table: string;
 	customer: TCustomer;
 	state: (typeof orderState)[number];
+	stockReserved: boolean;
 	orderTotal: number;
 	taxTotal: number;
 	products: TProduct[];

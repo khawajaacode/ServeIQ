@@ -15,8 +15,8 @@ const OrderDetails = ({ order, profile }: TOrderDetailsProps) => {
 		const node = root.current;
 		if (!node) return;
 		node.classList.add("printTarget");
+		window.addEventListener("afterprint", () => node.classList.remove("printTarget"), { once: true });
 		window.print();
-		node.classList.remove("printTarget");
 	};
 
 	return (

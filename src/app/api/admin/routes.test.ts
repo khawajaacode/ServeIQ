@@ -18,6 +18,8 @@ vi.mock("#utils/database/models/order", () => ({
 	Orders: { find: orderFind, findById: vi.fn() },
 }));
 vi.mock("#utils/database/helper/order", () => ({ flattenOrderProducts: (order: unknown) => order }));
+vi.mock("#utils/database/helper/inventory", () => ({ getStockRequirements: vi.fn(), releaseStock: vi.fn() }));
+vi.mock("#utils/realtime/bus", () => ({ publish: vi.fn() }));
 
 describe("admin table and kitchen route scoping", () => {
 	beforeEach(() => {
@@ -34,10 +36,10 @@ describe("admin table and kitchen route scoping", () => {
 		expect(Tables).toHaveBeenCalledWith({ name: "Table 1", username: "one", restaurantID: "restaurant-a" });
 	});
 
-	it("scopes kitchen order reads and only permits completion", async () => {
+	it("scopes kitchen order reads and only permits preparation actions", async () => {
 		const { GET } = await import("./order/route");
 		await GET();
-		expect(orderFind).toHaveBeenCalledWith({ restaurantID: "restaurant-a", state: "active" });
+		expect(orderFind).toHaveBeenCalledWith({ restaurantID: "restaurant-a", state: { $in: ["active", "preparing", "ready"] } });
 
 		const { POST } = await import("./order/action/route");
 		const response = await POST(

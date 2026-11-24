@@ -271,7 +271,8 @@
 }
 
 @media print {
-	body * {
+	/* ponytail: Ctrl+P with no selected print target prints the full dashboard; add a beforeprint targeter if invoice-on-Ctrl+P is needed. */
+	body:has(.printTarget) * {
 		visibility: hidden;
 	}
 

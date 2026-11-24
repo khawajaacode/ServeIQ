@@ -8,13 +8,13 @@ import type { TOrder } from "#utils/database/models/order";
 import { fetcher } from "#utils/helper/common";
 
 const OrderDefault: TOrderInitialType = {
-	order: undefined,
+	cancelingOrder: false,
+	cancelOrder: async () => false,
 	loading: false,
+	loginOpen: false,
+	order: undefined,
 	placeOrder: async () => false,
 	placingOrder: false,
-	cancelOrder: async () => false,
-	cancelingOrder: false,
-	loginOpen: false,
 	setLoginOpen: () => undefined,
 };
 
@@ -22,7 +22,7 @@ export const OrderContext = createContext(OrderDefault);
 export const OrderProvider = ({ children }: TOrderProviderProps) => {
 	const session = useSession();
 	const isCustomer = session.status === "authenticated" && session.data?.role === "customer";
-	const { data: order, isLoading: loading, mutate } = useSWR(isCustomer ? "/api/order" : null, fetcher, { refreshInterval: 5000 });
+	const { data: order, isLoading: loading, mutate } = useSWR(isCustomer ? "/api/order" : null, fetcher);
 
 	const [placingOrder, setPlacingOrder] = useState(false);
 	const [cancelingOrder, setCancelingOrder] = useState(false);
@@ -32,11 +32,11 @@ export const OrderProvider = ({ children }: TOrderProviderProps) => {
 		setPlacingOrder(true);
 		try {
 			const req = await fetch("/api/order/place", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					products: products.map(({ _id, quantity }) => ({ _id, quantity })),
 				}),
+				headers: { "Content-Type": "application/json" },
+				method: "POST",
 			});
 			const res = await req.json().catch(() => null);
 
@@ -82,11 +82,24 @@ export const OrderProvider = ({ children }: TOrderProviderProps) => {
 	};
 
 	useEffect(() => {
-		if (isCustomer) mutate();
+		if (!isCustomer) return;
+		mutate();
+		const events = new EventSource("/api/events");
+		const refresh = window.setInterval(() => mutate(), 10_000);
+		const update = () => mutate();
+		events.addEventListener("order.created", update);
+		events.addEventListener("order.accepted", update);
+		events.addEventListener("order.preparing", update);
+		events.addEventListener("order.ready", update);
+		events.addEventListener("order.completed", update);
+		return () => {
+			events.close();
+			window.clearInterval(refresh);
+		};
 	}, [isCustomer, mutate]);
 
 	return (
-		<OrderContext.Provider value={{ order, loading, placeOrder, placingOrder, cancelOrder, cancelingOrder, loginOpen, setLoginOpen }}>
+		<OrderContext.Provider value={{ cancelingOrder, cancelOrder, loading, loginOpen, order, placeOrder, placingOrder, setLoginOpen }}>
 			{children}
 		</OrderContext.Provider>
 	);

@@ -1,5 +1,5 @@
-import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { createContext, type ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
@@ -11,17 +11,17 @@ import type { TTable } from "#utils/database/models/table";
 import { fetcher } from "#utils/helper/common";
 
 const AdminDefault: TAdminInitialType = {
-	profile: undefined,
 	menus: [],
-	tables: [],
-	profileLoading: false,
-	profileMutate: () => new Promise<void>(() => undefined),
-	orderRequest: [],
-	orderActive: [],
-	orderHistory: [],
 	orderAction: () => new Promise<void>(() => undefined),
 	orderActionLoading: false,
+	orderActive: [],
+	orderHistory: [],
 	orderLoading: false,
+	orderRequest: [],
+	profile: undefined,
+	profileLoading: false,
+	profileMutate: () => new Promise<void>(() => undefined),
+	tables: [],
 };
 
 const sortByDate = (a: { updatedAt: string | number | Date }, b: { updatedAt: string | number | Date }) =>
@@ -35,7 +35,7 @@ export const AdminProvider = ({ children }: TAdminProviderProps) => {
 	const _tab = params.get("tab");
 	const _subTab = params.get("subTab");
 	const { data: { profile, menus = [], tables = [] } = {}, isLoading: profileLoading, mutate: profileMutate } = useSWR(isAdmin ? "/api/admin" : null, fetcher);
-	const { data: orderData = [], isLoading: orderLoading, mutate } = useSWR(isAdmin ? "/api/admin/order" : null, fetcher, { refreshInterval: 5000 });
+	const { data: orderData = [], isLoading: orderLoading, mutate } = useSWR(isAdmin ? "/api/admin/order" : null, fetcher);
 	const [orderActionLoading, setOrderActionLoading] = useState(false);
 
 	const { orderRequest, orderActive, orderHistory } =
@@ -47,7 +47,7 @@ export const AdminProvider = ({ children }: TAdminProviderProps) => {
 				} else acc.orderHistory.push(order);
 				return acc;
 			},
-			{ orderRequest: [], orderActive: [], orderHistory: [] }
+			{ orderActive: [], orderHistory: [], orderRequest: [] }
 		) ?? {};
 
 	[orderRequest, orderActive, orderHistory].forEach((arr) => arr?.sort?.(sortByDate));
@@ -57,9 +57,9 @@ export const AdminProvider = ({ children }: TAdminProviderProps) => {
 		setOrderActionLoading(true);
 		try {
 			const req = await fetch("/api/admin/order/action", {
-				method: "POST",
+				body: JSON.stringify({ action, orderID }),
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ orderID, action }),
+				method: "POST",
 			});
 			const res = await req.json().catch(() => null);
 
@@ -77,23 +77,36 @@ export const AdminProvider = ({ children }: TAdminProviderProps) => {
 	};
 
 	useEffect(() => {
-		if (isAdmin) mutate();
+		if (!isAdmin) return;
+		mutate();
+		const events = new EventSource("/api/events");
+		const refresh = window.setInterval(() => mutate(), 15_000);
+		const update = () => mutate();
+		events.addEventListener("order.created", update);
+		events.addEventListener("order.accepted", update);
+		events.addEventListener("order.preparing", update);
+		events.addEventListener("order.ready", update);
+		events.addEventListener("order.completed", update);
+		return () => {
+			events.close();
+			window.clearInterval(refresh);
+		};
 	}, [isAdmin, mutate]);
 
 	return (
 		<AdminContext.Provider
 			value={{
-				profile,
 				menus,
-				tables,
-				profileLoading,
-				profileMutate,
-				orderRequest,
-				orderActive,
-				orderHistory,
 				orderAction,
 				orderActionLoading,
+				orderActive,
+				orderHistory,
 				orderLoading,
+				orderRequest,
+				profile,
+				profileLoading,
+				profileMutate,
+				tables,
 			}}
 		>
 			{children}
